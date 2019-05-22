@@ -18,7 +18,7 @@ RUN_MODE = 'STAGING'
 DATABASES.update(
     {
         'default': {
-            'ENGINE': 'jango.db.backends.mysql',
+            'ENGINE': 'django.db.backends.mysql',
             'NAME': 'o39',  # 数据库名
             'USER': 'root',  # 数据库用户
             'PASSWORD': 'Uqv.83WuNm',  # 数据库密码
