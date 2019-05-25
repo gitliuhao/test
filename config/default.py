@@ -22,9 +22,11 @@ from blueapps.conf.default_settings import *  # noqa
 # 请在这里加入你的自定义 APP
 INSTALLED_APPS += (
     'home_application',
-    'mako_application'
+    'mako_application',
+    'channels',
+    'tailf',
 )
-
+ASGI_APPLICATION = 'routing.application'
 # 这里是默认的中间件，大部分情况下，不需要改动
 # 如果你已经了解每个默认 MIDDLEWARE 的作用，确实需要去掉某些 MIDDLEWARE，或者改动先后顺序，请去掉下面的注释，然后修改
 # MIDDLEWARE = (
@@ -65,8 +67,16 @@ MIDDLEWARE += (
 STATIC_VERSION = '1.0'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
+    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'tailf/static')
 ]
+
+# 监控主机配置
+SERVER_DICT = {
+    '11.11.11.11': {'username': 'root', 'password': 'vagrant'},
+    '22.22.22.22': {'username': 'root', 'password': 'vagrant'},
+}
+
 
 # CELERY 开关，使用时请改为 True，修改项目目录下的 Procfile 文件，添加以下两行命令：
 # worker: python manage.py celery worker -l info
@@ -131,3 +141,4 @@ if locals().get('DISABLED_APPS'):
             continue
         locals()[_key] = tuple([_item for _item in locals()[_key]
                                 if not _item.startswith(_app + '.')])
+
