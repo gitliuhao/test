@@ -1,4 +1,4 @@
-{% extends "tailf/base.html" %}
+{% extends "asset/base.html" %}
 
 {% block content %}
 <form>
@@ -36,9 +36,9 @@
       var args = window.location.search
       console.log(args)
       {#window.chatSocket = new WebSocket(#}
-      {#  'ws://' + window.location.host + '/ws/tailf/' + $('#file').val() + '/');#}
+      {#  'ws://' + window.location.host + '/ws/asset/' + $('#file').val() + '/');#}
       window.chatSocket = new WebSocket(
-        'ws://' + window.location.host + '/ws/tailf/' + args + "&log_name=" + $('#file').val());
+        'ws://' + window.location.host + '/ws/asset/' + args + "&log_name=" + $('#file').val());
 
       chatSocket.onmessage = function(e) {
         var data = JSON.parse(e.data);

@@ -5992,7 +5992,7 @@ var accordion = $.widget( "ui.accordion", {
 			that = this,
 			adjust = 0,
 			down = toShow.length &&
-				( !toHide.length || ( toShow.index() < toHide.index() ) ),
+				( !toHide.length || ( toShow.tailf() < toHide.tailf() ) ),
 			animate = this.options.animate || {},
 			options = down && animate.down || animate,
 			complete = function() {
@@ -6286,7 +6286,7 @@ var menu = $.widget( "ui.menu", {
 			match = this.activeMenu.find( this.options.items ).filter(function() {
 				return regex.test( $( this ).text() );
 			});
-			match = skip && match.index( this.active.next() ) !== -1 ?
+			match = skip && match.tailf( this.active.next() ) !== -1 ?
 				this.active.nextAll( ".ui-menu-item" ) :
 				match;
 
@@ -9839,7 +9839,7 @@ var dialog = $.widget( "ui.dialog", {
 		};
 		this.originalPosition = {
 			parent: this.element.parent(),
-			index: this.element.parent().children().index( this.element )
+			index: this.element.parent().children().tailf( this.element )
 		};
 		this.originalTitle = this.element.attr( "title" );
 		this.options.title = this.options.title || this.originalTitle;
@@ -10872,16 +10872,16 @@ var selectmenu = $.widget( "ui.selectmenu", {
 					var item = ui.item.data( "ui-selectmenu-item" );
 
 					// Prevent inital focus from firing and check if its a newly focused item
-					if ( that.focusIndex != null && item.index !== that.focusIndex ) {
+					if ( that.focusIndex != null && item.tailf !== that.focusIndex ) {
 						that._trigger( "focus", event, { item: item } );
 						if ( !that.isOpen ) {
 							that._select( item, event );
 						}
 					}
-					that.focusIndex = item.index;
+					that.focusIndex = item.tailf;
 
 					that.button.attr( "aria-activedescendant",
-						that.menuItems.eq( item.index ).attr( "id" ) );
+						that.menuItems.eq( item.tailf ).attr( "id" ) );
 				}
 			})
 			.menu( "instance" );
@@ -11146,12 +11146,12 @@ var selectmenu = $.widget( "ui.selectmenu", {
 		var oldIndex = this.element[ 0 ].selectedIndex;
 
 		// Change native select element
-		this.element[ 0 ].selectedIndex = item.index;
+		this.element[ 0 ].selectedIndex = item.tailf;
 		this._setText( this.buttonText, item.label );
 		this._setAria( item );
 		this._trigger( "select", event, { item: item } );
 
-		if ( item.index !== oldIndex ) {
+		if ( item.tailf !== oldIndex ) {
 			this._trigger( "change", event, { item: item } );
 		}
 
@@ -11159,7 +11159,7 @@ var selectmenu = $.widget( "ui.selectmenu", {
 	},
 
 	_setAria: function( item ) {
-		var id = this.menuItems.eq( item.index ).attr( "id" );
+		var id = this.menuItems.eq( item.tailf ).attr( "id" );
 
 		this.button.attr({
 			"aria-labelledby": id,

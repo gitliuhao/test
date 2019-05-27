@@ -8,7 +8,8 @@ import os
 # This will make sure the app is always imported when
 # Django starts so that shared_task will use this app.
 from blueapps.core.celery import celery_app
-
+import pymysql
+pymysql.install_as_MySQLdb()
 # app 基本信息
 
 # SaaS运行版本，如非必要请勿修改

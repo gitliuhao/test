@@ -22,7 +22,7 @@ BROKER_URL = 'redis://localhost:6379/0'
 
 DEBUG = True
 
-ASGI_APPLICATION = 'tailf.routing.application'# 本地开发数据库设置
+ASGI_APPLICATION = 'asset.routing.application'# 本地开发数据库设置
 
 # USE FOLLOWING SQL TO CREATE THE DATABASE NAMED APP_CODE
 # SQL: CREATE DATABASE `openpaas_test_v2` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; # noqa: E501

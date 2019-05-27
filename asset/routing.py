@@ -5,7 +5,7 @@ from django.conf.urls import url
 from .consumers import TailfConsumer
 
 
-url_patterns = [url(r"^ws/tailf/$", TailfConsumer)]
+url_patterns = [url(r"^ws/asset/$", TailfConsumer)]
 application = ProtocolTypeRouter({
     # (http->django views is added by default)
     'websocket': AuthMiddlewareStack(

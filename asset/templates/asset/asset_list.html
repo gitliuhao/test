@@ -1,0 +1,29 @@
+{% extends "asset/base.html" %}
+
+{% block content %}
+    <div class="col-sm-2">
+        <a class="btn btn-success btn-block">添加主机配置</a>
+    </div>
+	<table class="table table-bordered">
+		<thead>
+			<tr>
+				<th>ip</th>
+				<th>用户名</th>
+                <th>秘钥</th>
+				<th>编辑</th>
+
+			</tr>
+		</thead>
+		<tbody>
+            {% for object in object_list %}
+			<tr>
+				<td>{object.host}</td>
+				<td>{object.username}</td>
+				<td>{object.ssh_secret_key.url}</td>
+				<td>Anna</td>
+			</tr>
+            {% endfor %}
+		</tbody>
+	</table>
+
+{% endblock %}

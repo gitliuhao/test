@@ -47,7 +47,7 @@ class ControlSsh(object):
         return log_list
 
     def send_tailf_log(self, log_path, drfsocket_instance):
-        cmd = "tailf {log_path}".format(log_path=log_path)
+        cmd = "asset {log_path}".format(log_path=log_path)
         if self.host:
             _, stdout, error = self.exec_command(cmd)
             while True:

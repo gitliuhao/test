@@ -76,13 +76,18 @@
   <aside class="main-sidebar">
     <section class="sidebar">
       <ul class="sidebar-menu" data-widget="tree">
-          {% for ip in server_list %}
         <li id="menu_demo_table">
-          <a href="{% url 'tailf-url:tailf-index' %}?server_ip={{ ip }}">
-            <i class="fa fa-heartbeat"></i> <span>{{ ip }}</span>
+          <a href="{% url 'asset-url:asset-list' %}">
+            <i class="fa fa-heartbeat"></i> <span>主机配置</span>
           </a>
         </li>
-          {% endfor %}
+
+          <li id="menu_demo_table">
+          <a href="{% url 'asset-url:tailf-index' %}">
+            <i class="fa fa-heartbeat"></i> <span>日志监控</span>
+          </a>
+
+        </li>
       </ul>
     </section>
   </aside>

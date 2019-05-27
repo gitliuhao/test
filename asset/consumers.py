@@ -2,19 +2,19 @@ import json
 from urllib import parse
 
 from channels.generic.websocket import WebsocketConsumer
-# from tailf.tasks import tailf
+# from asset.tasks import asset
 import _thread
 
 from django.conf import settings
 
-from tailf.task import tailfLog, ControlSsh
+from asset.task import tailfLog, ControlSsh
 
 
 class TailfConsumer(WebsocketConsumer):
     def connect(self):
         self.file_id = self.scope["url_route"]["kwargs"]
         url_query = self.scope['query_string']
-        # self.result = tailf.delay(self.file_id, self.channel_name)
+        # self.result = asset.delay(self.file_id, self.channel_name)
         # tailfLog(self.channel_name, self.channel_name)
         # print('connect:', self.channel_name, self.result.id)
 

@@ -24,7 +24,7 @@ INSTALLED_APPS += (
     'home_application',
     'mako_application',
     'channels',
-    'tailf',
+    'asset',
 )
 
 # 这里是默认的中间件，大部分情况下，不需要改动
@@ -68,7 +68,7 @@ STATIC_VERSION = '1.0'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
-    os.path.join(BASE_DIR, 'tailf/static')
+    os.path.join(BASE_DIR, 'asset/static')
 ]
 
 # 监控主机配置

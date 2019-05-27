@@ -5,7 +5,18 @@ from django.conf import settings
 from django.shortcuts import render
 
 # Create your views here.
-from tailf.task import find_log_list, ControlSsh
+from django.views.generic import ListView, CreateView
+
+from asset.models import Asset
+from asset.task import find_log_list, ControlSsh
+
+
+class AssetListView(ListView):
+    model = Asset
+
+
+class AssetCreateView(CreateView):
+    model = Asset
 
 
 def tailf(request):
@@ -17,4 +28,4 @@ def tailf(request):
     if host_conf:
         xssh = ControlSsh(host=host, **host_conf)
         log_list += xssh.find_log_list(path)
-    return render(request, 'tailf/index.html', {"server_list": server_list, "path": path, 'log_list':  log_list})
+    return render(request, 'asset/tailf.html', {"server_list": server_list, "path": path, 'log_list':  log_list})
