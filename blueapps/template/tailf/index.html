@@ -1,0 +1,64 @@
+{% extends "tailf/base.html" %}
+
+{% block content %}
+<form>
+    <div class="col-sm-8">
+        <input class="form-control" name="path" value="{{ request.GET.path }}">
+        <input class="form-control" name="server_ip" value="{{ request.GET.server_ip }}", type="hidden">
+    </div>
+    <div class="col-sm-2">
+        <input class="btn btn-success btn-block" type="submit" value="提交路径"/><br/>
+    </div>
+</form>
+
+
+<div class="col-sm-8">
+  <select class="form-control" id="file">
+    <option value="">选择要监听的日志</option>
+    {% for log in log_list %}
+    <option value="{{ log }}">{{ log }}</option>
+    {% endfor %}
+  </select>
+</div>
+<div class="col-sm-2">
+  <input class="btn btn-success btn-block" type="button" onclick="connect()" value="开始监听"/><br/>
+</div>
+<div class="col-sm-2">
+  <input class="btn btn-warning btn-block" type="button" onclick="goclose()" value="终止监听"/><br/>
+</div>
+<div class="col-sm-12">
+  <textarea class="form-control" id="chat-log" disabled rows="20"></textarea>
+</div>
+    <script>
+
+  function connect() {
+    if ( $('#file').val() ) {
+      var args = window.location.search
+      console.log(args)
+      {#window.chatSocket = new WebSocket(#}
+      {#  'ws://' + window.location.host + '/ws/tailf/' + $('#file').val() + '/');#}
+      window.chatSocket = new WebSocket(
+        'ws://' + window.location.host + '/ws/tailf/' + args + "&log_name=" + $('#file').val());
+
+      chatSocket.onmessage = function(e) {
+        var data = JSON.parse(e.data);
+        var message = data['message'];
+        document.querySelector('#chat-log').value += (message);
+        // 跳转到页面底部
+        $('#chat-log').scrollTop($('#chat-log')[0].scrollHeight);
+      };
+
+      chatSocket.onerror = function(e) {
+        toastr.error('服务端连接异常！')
+      };
+
+      chatSocket.onclose = function(e) {
+        toastr.error('websocket已关闭！')
+      };
+    } else {
+      toastr.warning('请选择要监听的日志文件')
+    }
+  }
+
+    </script>
+{% endblock %}
