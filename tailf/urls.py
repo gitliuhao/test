@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from . import views
+from tailf import views
 urlpatterns = (
     url(r'^$', views.tailf, name='tailf-index'),
 )
