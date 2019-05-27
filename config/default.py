@@ -26,7 +26,7 @@ INSTALLED_APPS += (
     'channels',
     'tailf',
 )
-ASGI_APPLICATION = 'routing.application'
+
 # 这里是默认的中间件，大部分情况下，不需要改动
 # 如果你已经了解每个默认 MIDDLEWARE 的作用，确实需要去掉某些 MIDDLEWARE，或者改动先后顺序，请去掉下面的注释，然后修改
 # MIDDLEWARE = (
