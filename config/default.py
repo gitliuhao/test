@@ -23,7 +23,7 @@ from blueapps.conf.default_settings import *  # noqa
 INSTALLED_APPS += (
     'home_application',
     'mako_application',
-    'channels',
+    # 'channels',
     'tailf',
 )
 
