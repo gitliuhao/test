@@ -20,5 +20,7 @@ httplib2==0.9.1
 uWSGI==2.0.13.1
 
 # 基于django的socket
+twisted==19.2.0
 channels==2.1.7
+
 
