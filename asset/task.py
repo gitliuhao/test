@@ -15,9 +15,10 @@ import json
 
 class ControlSsh(object):
 
-    def __init__(self, cmd='', host=None, username='root', port=22, password=''):
+    def __init__(self, cmd='', host=None, username='root', port=22, password='', key_filename=''):
         self.client = None
         self.cmd, self.host, self.username, self.port, self.password = cmd, host, username, port, password
+        self.key_filename = key_filename
 
     @property
     def ssh_client(self):
@@ -26,7 +27,8 @@ class ControlSsh(object):
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())  #
 
-        ssh.connect(self.host, username=self.username, password=self.password, port=self.port)
+        ssh.connect(self.host, username=self.username, password=self.password,
+                    port=self.port, key_filename=self.key_filename)
         self.client = ssh
         return self.client
 
@@ -47,7 +49,7 @@ class ControlSsh(object):
         return log_list
 
     def send_tailf_log(self, log_path, drfsocket_instance):
-        cmd = "asset {log_path}".format(log_path=log_path)
+        cmd = "tail -f {log_path}".format(log_path=log_path)
         if self.host:
             _, stdout, error = self.exec_command(cmd)
             while True:

@@ -6,7 +6,9 @@ from channels.generic.websocket import WebsocketConsumer
 import _thread
 
 from django.conf import settings
+from django.shortcuts import get_object_or_404
 
+from asset.models import Asset
 from asset.task import tailfLog, ControlSsh
 
 
@@ -25,9 +27,10 @@ class TailfConsumer(WebsocketConsumer):
         result = parse.unquote(url_query.decode())
         query_dict = parse.parse_qs(result)
         path, log_name = query_dict.get('path')[0], query_dict.get('log_name')[0]
-        host = query_dict.get('server_ip')[0]
-        host_conf = settings.SERVER_DICT[host]
-        xssh = ControlSsh(host=host, **host_conf)
+
+        asset_id = query_dict.get('asset_id')[0]
+        asset = get_object_or_404(Asset, pk=asset_id)
+        xssh = ControlSsh(username=asset.username, host=asset.host, key_filename=asset.ssh_key_url())
         log_path = path+log_name if path[-1] == "/" else path+'/'+log_name
         self.accept()
         _thread.start_new_thread(xssh.send_tailf_log, (log_path, self,))
@@ -36,7 +39,9 @@ class TailfConsumer(WebsocketConsumer):
     def disconnect(self, close_code):
         # 中止执行中的Task
         # self.result.revoke(terminate=True)
-        print('disconnect:', self.file_id, self.channel_name)
+        # print('disconnect:', self.file_id, self.channel_name)
+
+        pass
 
     def send_message(self, event):
         self.send(text_data=json.dumps({

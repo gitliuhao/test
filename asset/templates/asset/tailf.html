@@ -1,10 +1,19 @@
 {% extends "asset/base.html" %}
 
 {% block content %}
+
 <form>
     <div class="col-sm-8">
+      <select class="form-control", name="asset_id">
+        <option value="">选择要监听的主机</option>
+        {% for asset in assets %}
+        <option value="{{ asset.id }}"{% if asset == select_asset %}selected {% endif %}>{{ asset.username }}@{{ asset.host }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-sm-8">
         <input class="form-control" name="path" value="{{ request.GET.path }}">
-        <input class="form-control" name="server_ip" value="{{ request.GET.server_ip }}", type="hidden">
+{#        <input class="form-control" name="server_ip" value="{{ request.GET.server_ip }}", type="hidden">#}
     </div>
     <div class="col-sm-2">
         <input class="btn btn-success btn-block" type="submit" value="提交路径"/><br/>
@@ -43,7 +52,7 @@
       chatSocket.onmessage = function(e) {
         var data = JSON.parse(e.data);
         var message = data['message'];
-        document.querySelector('#chat-log').value += (message);
+        document.querySelector('#chat-log').value += (message+'\n');
         // 跳转到页面底部
         $('#chat-log').scrollTop($('#chat-log')[0].scrollHeight);
       };
@@ -60,5 +69,14 @@
     }
   }
 
+
+  function goclose() {
+    console.log(window.chatSocket);
+
+    window.chatSocket.close();
+    window.chatSocket.onclose = function(e) {
+      toastr.success('已终止日志监听！')
+    };
+  }
     </script>
 {% endblock %}
