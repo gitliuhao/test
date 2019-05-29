@@ -10,7 +10,7 @@ else:
 RUN_MODE = 'DEVELOP'
 
 # APP本地静态资源目录
-# STATIC_URL = '/static/'
+STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
 
@@ -23,7 +23,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
-    os.path.join(BASE_DIR, 'asset/static')
+    # os.path.join(BASE_DIR, 'asset/static')
 ]
 
 # APP静态资源目录url

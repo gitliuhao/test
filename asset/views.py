@@ -17,7 +17,7 @@ class AssetListView(ListView):
 
 class AssetCreateView(CreateView):
     form_class = AssetForm
-    template_name = 'asset/asset_form.html'
+    template_name = '../templates/asset/asset_form.html'
     success_url = '/asset'
     model = Asset
 
@@ -29,7 +29,7 @@ class AssetCreateView(CreateView):
 class AssetUpdateView(UpdateView):
     pk_url_kwarg = 'id'
     form_class = AssetForm
-    template_name = 'asset/asset_form.html'
+    template_name = '../templates/asset/asset_form.html'
     success_url = '/asset'
     model = Asset
 
@@ -55,7 +55,7 @@ def tailf(request):
         kwargs_data['select_asset'] = asset
         xssh = ControlSsh(username=asset.username, host=asset.host, key_filename=asset.ssh_key_url())
         log_list += xssh.find_log_list(path)
-    return render(request, 'asset/tailf.html', kwargs_data)
+    return render(request, '../templates/asset/tailf.html', kwargs_data)
 
 
 @accept_websocket
