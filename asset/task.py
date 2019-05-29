@@ -1,16 +1,10 @@
 from __future__ import absolute_import
 
+import json
 import subprocess
 
 import paramiko
-from celery import shared_task
-
-import time
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
 from django.conf import settings
-
-import json
 
 
 class ControlSsh(object):
@@ -61,6 +55,7 @@ class ControlSsh(object):
                             "message": str(line)
                         }
                     ).encode())  # 把内容发送到websocket服务端
+
 
 
 def rcmd(host, password, cmd, port=22, username='root'):
