@@ -13,6 +13,11 @@ RUN_MODE = 'DEVELOP'
 STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
+
+SITE_URL = '/asset/'
+
+PROJECT_PATH = 'test/'
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
