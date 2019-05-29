@@ -8,4 +8,5 @@ urlpatterns = (
     url(r'^/update/(?P<id>\d+)/$', views.AssetUpdateView.as_view(), name='asset-update'),
     url(r'^/delete/(?P<id>\d+)/$', views.asset_delete, name='asset-delete'),
     url(r'^/tailf/$', views.tailf, name='tailf-index'),
+    url(r'^/ws/asset/$', views.tailf_websocket, name='tailf-websocket'),
 )

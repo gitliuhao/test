@@ -1,12 +1,15 @@
+import _thread
+import json
 import subprocess
 
 import paramiko
 from django.conf import settings
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from dwebsocket import accept_websocket
 
 from asset.forms import AssetForm
 from asset.models import Asset
@@ -58,3 +61,15 @@ def tailf(request):
         xssh = ControlSsh(username=asset.username, host=asset.host, key_filename=asset.ssh_key_url())
         log_list += xssh.find_log_list(path)
     return render(request, 'asset/tailf.html', kwargs_data)
+
+
+@accept_websocket
+def tailf_websocket(request):
+    if request.is_websocket():#判断是不是websocket连接
+        path, log_name = request.GET.get('path'), request.GET.get('log_name')
+
+        asset_id = request.GET.get('asset_id')[0]
+        asset = get_object_or_404(Asset, pk=asset_id)
+        xssh = ControlSsh(username=asset.username, host=asset.host, key_filename=asset.ssh_key_url())
+        log_path = path+log_name if path[-1] == "/" else path+'/'+log_name
+        xssh.send_tailf_log(log_path, request.websocket)

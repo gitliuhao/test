@@ -60,7 +60,7 @@ class ControlSsh(object):
                             "type": "send.message",
                             "message": str(line)
                         }
-                    ))  # 把内容发送到websocket服务端
+                    ).encode())  # 把内容发送到websocket服务端
 
 
 def rcmd(host, password, cmd, port=22, username='root'):

@@ -23,7 +23,6 @@ from blueapps.conf.default_settings import *  # noqa
 INSTALLED_APPS += (
     'home_application',
     'mako_application',
-    'channels',
     'asset',
 )
 
@@ -75,12 +74,6 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
     os.path.join(BASE_DIR, 'asset/static')
 ]
-
-# 监控主机配置
-SERVER_DICT = {
-    '11.11.11.11': {'username': 'root', 'password': 'vagrant'},
-    '22.22.22.22': {'username': 'root', 'password': 'vagrant'},
-}
 
 
 # CELERY 开关，使用时请改为 True，修改项目目录下的 Procfile 文件，添加以下两行命令：
