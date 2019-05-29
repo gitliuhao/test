@@ -22,8 +22,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-    os.path.join(BASE_DIR, 'asset/static')
+    os.path.join(BASE_DIR, 'static')
 ]
 
 # APP静态资源目录url
