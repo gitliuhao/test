@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>ops-coffee | 运维咖啡吧</title>
+  <title>运维</title>
 {% load static %}
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -29,10 +29,10 @@
 <div class="wrapper">
 
   <header class="main-header">
-    <a href="/" class="logo">
-      <span class="logo-mini"><img src="{% static '/asset/img/logo.png' %}"></span>
-      <span class="logo-lg"><img src="{% static '/asset/img/logo.png' %}"><b> o p s - c o f f e e </b></span>
-    </a>
+{#    <a href="/" class="logo">#}
+{#      <span class="logo-mini"><img src="{% static '/asset/img/aoyewang.jpg' %}"></span>#}
+{#      <span class="logo-lg"><img src="{% static '/asset/img/aoyewang.jpg' %}"><b></b></span>#}
+{#    </a>#}
     <nav class="navbar navbar-static-top">
       <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
         <span class="sr-only">Toggle navigation</span>
@@ -40,35 +40,6 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </a>
-
-      <div class="navbar-custom-menu">
-        <ul class="nav navbar-nav">
-          <li class="dropdown user user-menu">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <img src="{% static '/asset/img/user.png' %}" class="user-image" alt="User Image">
-              <span class="hidden-xs">{{ request.user.username }}</span>
-            </a>
-            <ul class="dropdown-menu">
-              <li class="user-header">
-                <img src="{% static '/asset/img/user.png' %}" class="img-circle" alt="User Image">
-
-                <p>
-                  {{ request.user.username }}
-                  <small>Last Login: {{ request.user.last_login }}</small>
-                </p>
-              </li>
-              <li class="user-footer">
-                <div class="pull-left">
-                  <a href="#" class="btn btn-default btn-flat">Profile</a>
-                </div>
-                <div class="pull-right">
-                  <a href="#" class="btn btn-default btn-flat">Sign out</a>
-                </div>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </div>
     </nav>
   </header>
 
@@ -113,10 +84,6 @@
   </div>
 
   <footer class="main-footer">
-    <div class="pull-right hidden-xs">
-      <b>Version</b> 1.0.0
-    </div>
-    <strong>Copyright &copy; ops-coffee.cn</strong>
   </footer>
 </div>
 
