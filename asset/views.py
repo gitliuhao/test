@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
+from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView
 from dwebsocket import accept_websocket
 
@@ -18,7 +19,7 @@ class AssetListView(ListView):
 class AssetCreateView(CreateView):
     form_class = AssetForm
     template_name = '../templates/asset/asset_form.html'
-    success_url = '/asset'
+    success_url = reverse_lazy('asset-url:asset-list')
     model = Asset
 
     def get_context_data(self, **kwargs):
@@ -29,8 +30,8 @@ class AssetCreateView(CreateView):
 class AssetUpdateView(UpdateView):
     pk_url_kwarg = 'id'
     form_class = AssetForm
-    template_name = '../templates/asset/asset_form.html'
-    success_url = '/asset'
+    template_name = 'asset/asset_form.html'
+    success_url = reverse_lazy('asset-url:asset-list')
     model = Asset
 
     def get_context_data(self, **kwargs):
