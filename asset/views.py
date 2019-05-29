@@ -54,8 +54,11 @@ def tailf(request):
     if asset_id:
         asset = get_object_or_404(Asset, pk=asset_id)
         kwargs_data['select_asset'] = asset
-        xssh = ControlSsh(username=asset.username, host=asset.host, key_filename=asset.ssh_key_url())
-        log_list += xssh.find_log_list(path)
+        try:
+            xssh = ControlSsh(username=asset.username, host=asset.host, key_filename=asset.ssh_key_url())
+            log_list += xssh.find_log_list(path)
+        except Exception as e:
+            kwargs_data['errors'] = str(e)
     return render(request, '../templates/asset/tailf.html', kwargs_data)
 
 
