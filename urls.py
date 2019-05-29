@@ -13,8 +13,10 @@ Class-based views
 Including another URLconf
     1. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
+from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.views.static import serve
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -26,4 +28,5 @@ urlpatterns = [
     # 这里的 mako_application 可以改成你想要的名字
     url(r'^mako/', include('mako_application.urls')),
     url(r'^asset/', include('asset.urls', namespace='asset-url')),
+    url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]

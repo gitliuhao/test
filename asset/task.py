@@ -22,7 +22,7 @@ class ControlSsh(object):
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())  #
 
         ssh.connect(self.host, username=self.username, password=self.password,
-                    port=self.port, key_filename=self.key_filename)
+                    port=self.port, key_filename=self.key_filename, timeout=5)
         self.client = ssh
         return self.client
 

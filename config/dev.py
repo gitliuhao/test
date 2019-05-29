@@ -12,11 +12,11 @@ RUN_MODE = 'DEVELOP'
 # APP本地静态资源目录
 STATIC_URL = '/static/'
 
-MEDIA_URL = '/media/'
-
 SITE_URL = 'test'
 
 # PROJECT_PATH = 'test/'
+
+MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
