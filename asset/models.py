@@ -10,7 +10,7 @@ class Asset(models.Model):
     ssh_secret_key = models.FileField(verbose_name='ssh远程秘钥', upload_to='ssh_key')
 
     def ssh_key_url(self):
-        return "{d_path}{s_path}".format(d_path=settings.MEDIA_URL[:-1], s_path=self.ssh_secret_key.url)
+        return self.ssh_secret_key.url
 
     class Meta:
         verbose_name = "主机"
