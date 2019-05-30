@@ -55,17 +55,6 @@ else:
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     STATIC_URL = '/static/'
 
-
-# media配置
-if not IS_LOCAL:
-    MEDIA_ROOT = 'static'
-    FORCE_SCRIPT_NAME = SITE_URL
-    MEDIA_URL = '%smedia/' % FORCE_SCRIPT_NAME
-else:
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-    MEDIA_URL = '/media/'
-
-
 # About Log
 LOG_NAME_PREFIX = os.getenv('BKPAAS_LOG_NAME_PREFIX')
 
