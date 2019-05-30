@@ -35,6 +35,7 @@ if 'BK_BROKER_URL' in os.environ:
     BROKER_URL = os.getenv('BK_BROKER_URL')
 
 # SITE_URL,STATIC_URL,,FORCE_SCRIPT_NAME
+MEDIA_URL = '/media/'
 # 测试环境
 if os.getenv('BK_ENV') == 'testing':
     BK_URL = os.environ.get("BK_URL", "%s/console" % BK_PAAS_HOST)
