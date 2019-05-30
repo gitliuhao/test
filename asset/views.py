@@ -8,7 +8,6 @@ from asset.forms import AssetForm
 from asset.models import Asset
 from asset.task import ControlSsh
 
-
 # Create your views here.
 
 
@@ -60,6 +59,10 @@ def tailf(request):
         except Exception as e:
             kwargs_data['errors'] = str(e)
     return render(request, '../templates/asset/tailf.html', kwargs_data)
+
+
+def local_tailf(request):
+    return render(request, 'asset/local_tailf.html')
 
 
 @accept_websocket
