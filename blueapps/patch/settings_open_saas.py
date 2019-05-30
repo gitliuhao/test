@@ -40,11 +40,15 @@ if os.getenv('BK_ENV') == 'testing':
     BK_URL = os.environ.get("BK_URL", "%s/console" % BK_PAAS_HOST)
     SITE_URL = os.environ.get("BK_SITE_URL", '/t/%s/' % APP_CODE)
     STATIC_URL = '%sstatic/' % SITE_URL
+    MEDIA_URL = '%smedia/' % SITE_URL
 # 正式环境
 if os.getenv('BK_ENV') == 'production':
     BK_URL = os.environ.get("BK_URL", "%s/console" % BK_PAAS_HOST)
     SITE_URL = os.environ.get("BK_SITE_URL", '/o/%s/' % APP_CODE)
     STATIC_URL = '%sstatic/' % SITE_URL
+    MEDIA_URL = '%smedia/' % SITE_URL
+
+MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
 
 # REMOTE_STATIC_URL
 REMOTE_STATIC_URL = '%sremote/' % STATIC_URL

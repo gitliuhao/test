@@ -10,7 +10,7 @@ else:
 RUN_MODE = 'DEVELOP'
 
 # APP本地静态资源目录
-STATIC_URL = '/static/'
+# STATIC_URL = '/static/'
 
 SITE_URL = 'test'
 
