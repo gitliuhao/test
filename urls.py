@@ -28,5 +28,5 @@ urlpatterns = [
     # 这里的 mako_application 可以改成你想要的名字
     url(r'^mako/', include('mako_application.urls')),
     url(r'^asset/', include('asset.urls', namespace='asset-url')),
-    url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+    # url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]
