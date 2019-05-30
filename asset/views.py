@@ -1,3 +1,5 @@
+import os
+
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
@@ -10,6 +12,21 @@ from asset.task import ControlSsh
 
 # Create your views here.
 
+def system_path_search(curpath):
+    find_t, curpath_list='', []
+    # 判断路径是否包含'/'
+    # 尾部名称find_t默认为''
+    if curpath[-1]!='/':
+        #包含则去掉尾数路径名称并赋值
+        *curpath_list, find_t = curpath.split('/')
+        # 重新分配路径
+        curpath = '/'.join(curpath_list) + '/'
+    try:
+        d_list = os.listdir(curpath)
+        search_list = [curpath+ t for t in d_list if find_t in t]
+        return search_list
+    except FileNotFoundError:
+        return []
 
 class AssetListView(ListView):
     model = Asset
