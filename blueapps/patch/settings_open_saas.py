@@ -48,7 +48,7 @@ if os.getenv('BK_ENV') == 'production':
     STATIC_URL = '%sstatic/' % SITE_URL
     MEDIA_URL = '%smedia/' % SITE_URL
 
-MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
+MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL[1:])
 
 # REMOTE_STATIC_URL
 REMOTE_STATIC_URL = '%sremote/' % STATIC_URL
