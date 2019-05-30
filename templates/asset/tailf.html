@@ -50,7 +50,7 @@
       {#window.chatSocket = new WebSocket(#}
       {#  'ws://' + window.location.host + '/ws/asset/' + $('#file').val() + '/');#}
       window.chatSocket = new WebSocket(
-        'ws://' + window.location.host + '/asset/ws/asset/' + args + "&log_name=" + $('#file').val());
+        'ws://' + window.location.host + '{% url "asset-url:tailf-websocket" %}' + args + "&log_name=" + $('#file').val());
 
       chatSocket.onmessage = function(e) {
         var data = JSON.parse(e.data);
