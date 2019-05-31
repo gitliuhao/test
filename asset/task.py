@@ -53,7 +53,7 @@ class ControlSsh(object):
                     drfsocket_instance.send(json.dumps(
                         {
                             "type": "send.message",
-                            "message": str(line)
+                            "message": line.encode()
                         }
                     ).encode())  # 把内容发送到websocket服务端
         # 监控本地的日志变动
@@ -65,7 +65,7 @@ class ControlSsh(object):
                     drfsocket_instance.send(json.dumps(
                         {
                             "type": "send.message",
-                            "message": str(line)
+                            "message": line.encode()
                         }
                     ).encode())  # 把内容发送到websocket服务端
 
