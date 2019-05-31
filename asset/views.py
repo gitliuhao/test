@@ -36,6 +36,10 @@ class AssetListView(ListView):
     model = Asset
 
 
+def asset(request):
+    return render(request, 'asset/asset_list.html')
+
+
 class AssetCreateView(CreateView):
     form_class = AssetForm
     template_name = '../templates/asset/asset_form.html'
