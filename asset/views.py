@@ -1,6 +1,8 @@
+import json
 import os
 
 from django.http import JsonResponse
+from django.http.response import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView
@@ -11,6 +13,7 @@ from asset.models import Asset
 from asset.task import ControlSsh
 
 # Create your views here.
+
 
 def system_path_search(curpath):
     find_t, curpath_list='', []
@@ -27,6 +30,7 @@ def system_path_search(curpath):
         return search_list
     except FileNotFoundError:
         return []
+
 
 class AssetListView(ListView):
     model = Asset
@@ -82,8 +86,13 @@ def local_tailf(request):
     return render(request, 'asset/local_tailf.html')
 
 
+def local_file_list(request):
+    local_path_list = system_path_search(request.GET.get('local_path'))
+    return HttpResponse(json.dumps(local_path_list))
+
+
 @accept_websocket
-def tailf_websocket(request):
+def tailf_socket(request):
     if request.is_websocket():#判断是不是websocket连接
         path, log_name = request.GET.get('path'), request.GET.get('log_name')
 
@@ -91,4 +100,12 @@ def tailf_websocket(request):
         asset = get_object_or_404(Asset, pk=asset_id)
         xssh = ControlSsh(username=asset.username, host=asset.host, key_filename=asset.ssh_key_url())
         log_path = path+log_name if path[-1] == "/" else path+'/'+log_name
+        xssh.send_tailf_log(log_path, request.websocket)
+
+
+@accept_websocket
+def local_tailf_socket(request):
+    if request.is_websocket():#判断是不是websocket连接
+        log_path = request.GET.get('log_path')
+        xssh = ControlSsh()
         xssh.send_tailf_log(log_path, request.websocket)

@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="col-sm-2">
-        <a class="btn btn-success btn-block" href="{% url 'asset-url:asset-create' %}">添加主机配置</a>
+        <a class="btn btn-success" href="{% url 'asset-url:asset-create' %}">添加配置</a>
     </div>
 
 	<table class="table table-bordered">
@@ -47,7 +47,7 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div>
-
+{% endblock %}
 {% block js %}
 <script type="text/javascript">
 
@@ -74,5 +74,3 @@ function delete_event(url) {
 }
 </script>
  {% endblock %}
-
-{% endblock %}

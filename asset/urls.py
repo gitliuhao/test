@@ -9,5 +9,7 @@ urlpatterns = (
     url(r'^delete/(?P<id>\d+)/$', views.asset_delete, name='asset-delete'),
     url(r'^tailf/$', views.tailf, name='tailf-index'),
     url(r'^local-tailf/$', views.local_tailf, name='local-tailf'),
-    url(r'^ws/asset/$', views.tailf_websocket, name='tailf-websocket'),
+    url(r'^local-file/$', views.local_file_list, name='local-file'),
+    url(r'^ws/asset/tailf/$', views.tailf_socket, name='tailf-websocket'),
+    url(r'^ws/local-asset/tailf/$', views.local_tailf_socket, name='local-tailf-websocket'),
 )

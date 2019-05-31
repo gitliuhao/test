@@ -9,7 +9,7 @@ from django.conf import settings
 
 class ControlSsh(object):
 
-    def __init__(self, cmd='', host=None, username='root', port=22, password='', key_filename=''):
+    def __init__(self, cmd='', host=None, username=None, port=22, password=None, key_filename=None):
         self.client = None
         self.cmd, self.host, self.username, self.port, self.password = cmd, host, username, port, password
         self.key_filename = key_filename
@@ -44,6 +44,7 @@ class ControlSsh(object):
 
     def send_tailf_log(self, log_path, drfsocket_instance):
         cmd = "tail -f {log_path}".format(log_path=log_path)
+        # 监控远程的日志变动
         if self.host:
             _, stdout, error = self.exec_command(cmd)
             while True:
@@ -55,7 +56,18 @@ class ControlSsh(object):
                             "message": str(line)
                         }
                     ).encode())  # 把内容发送到websocket服务端
-
+        # 监控本地的日志变动
+        else:
+            popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+            while True:
+                line = popen.stdout.readline().strip()
+                if line:
+                    drfsocket_instance.send(json.dumps(
+                        {
+                            "type": "send.message",
+                            "message": str(line)
+                        }
+                    ).encode())  # 把内容发送到websocket服务端
 
 
 def rcmd(host, password, cmd, port=22, username='root'):
