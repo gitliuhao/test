@@ -91,7 +91,11 @@ def local_tailf(request):
 
 
 def local_file_list(request):
-    local_path_list = system_path_search(request.GET.get('local_path'))
+    local_path = request.GET.get('local_path')
+    root_path = "/data/xls/runtime/"
+    if len(local_path)<=len(root_path) or root_path!=local_path[:len(root_path)]:
+        return HttpResponse({"errors": 'not permmission'}, status=403)
+    local_path_list = system_path_search(local_path)
     return HttpResponse(json.dumps(local_path_list))
 
 
@@ -111,5 +115,9 @@ def tailf_socket(request):
 def local_tailf_socket(request):
     if request.is_websocket():#判断是不是websocket连接
         log_path = request.GET.get('log_path')
+        root_path = "/data/xls/runtime"
+        if len(log_path) <= len(root_path) or root_path != log_path[:len(root_path)]:
+            HttpResponse({"errors": 'not permmission'}, status=403)
+
         xssh = ControlSsh()
         xssh.send_tailf_log(log_path, request.websocket)
