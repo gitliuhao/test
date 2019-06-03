@@ -48,6 +48,9 @@ class ControlSsh(object):
         if self.host:
             _, stdout, error = self.exec_command(cmd)
             while True:
+                if drfsocket_instance.has_messages():
+                    drfsocket_instance.close()
+                    break
                 line = stdout.readline().strip()
                 if line:
                     drfsocket_instance.send(json.dumps(
@@ -61,6 +64,10 @@ class ControlSsh(object):
             popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             while True:
                 line = popen.stdout.readline().strip()
+                if drfsocket_instance.has_messages():
+                    drfsocket_instance.read()
+                    drfsocket_instance.close()
+                    break
                 if line:
                     drfsocket_instance.send(json.dumps(
                         {

@@ -87,7 +87,7 @@ def tailf(request):
 
 
 def local_tailf(request):
-    return render(request, 'asset/local_tailf.html')
+    return render(request, 'asset/local_tailf.html', {'root_path': '/data/xls/runtime/'})
 
 
 def local_file_list(request):
@@ -113,11 +113,12 @@ def tailf_socket(request):
 
 @accept_websocket
 def local_tailf_socket(request):
+
     if request.is_websocket():#判断是不是websocket连接
         log_path = request.GET.get('log_path')
         root_path = "/data/xls/runtime"
         if len(log_path) <= len(root_path) or root_path != log_path[:len(root_path)]:
             HttpResponse({"errors": 'not permmission'}, status=403)
-
         xssh = ControlSsh()
         xssh.send_tailf_log(log_path, request.websocket)
+    return HttpResponse('')

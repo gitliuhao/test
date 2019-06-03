@@ -11,20 +11,25 @@
       </select>
     </div>
     <div class="col-sm-8">
-        <input id="autocomplete-ajax" class="form-control" name="path" value="/data/xls/runtime/">
+        <input class="form-control-static" name="path1" value="{{ root_path }}" disabled="disabled">
+        <input id="autocomplete-ajax" class="form-control-static" name="path">
+{#        <input id="autocomplete-ajax" class="form-control" name="path" value="/data/xls/runtime/">#}
 {#        <input type="text" name="country" id="autocomplete-ajax-x" disabled="disabled" style="color: #CCC; position: absolute; background: transparent; z-index: 1;"/>#}
 {#        <input class="form-control" name="server_ip" value="{{ request.GET.server_ip }}", type="hidden">#}
+    <input class="btn btn-success" type="button" onclick="connect()" value="开始监听"/>
+    <input class="btn btn-warning" type="button" onclick="goclose()" value="终止监听"/><br/>
         {% if errors %}
         <font color="red">{{ errors }}</font>
         {% endif %}
     </div>
 
-<div class="col-sm-2">
-  <input class="btn btn-success btn-block" type="button" onclick="connect()" value="开始监听"/><br/>
-</div>
-<div class="col-sm-2">
-  <input class="btn btn-warning btn-block" type="button" onclick="goclose()" value="终止监听"/><br/>
-</div>
+{#<div class="col-sm-2">#}
+{#  <input class="btn btn-success" type="button" onclick="connect()" value="开始监听"/><br/>#}
+{#</div>#}
+{#<div class="col-sm-2">#}
+{#  <input class="btn btn-warning btn-block" type="button" onclick="goclose()" value="终止监听"/><br/>#}
+{#</div>#}
+
 <div class="col-sm-12">
   <textarea class="form-control" id="chat-log" disabled rows="20"></textarea>
 </div>
@@ -56,7 +61,7 @@
       .autocomplete({
         source: function( request, response ) {
           $.getJSON( "{% url 'asset-url:local-file' %}", {
-            local_path: extractLast( request.term )
+            local_path: extractLast(  "{{ root_path }}" + request.term )
           }, response );
         },
         search: function() {
@@ -74,8 +79,9 @@
           var terms = split( this.value );
           // 移除当前输入
           terms.pop();
+          var default_path = "{{ root_path }}"
           // 添加被选项
-          terms.push( ui.item.value );
+          terms.push( ui.item.value.substring(default_path.length) );
           // 添加占位符，在结尾添加逗号+空格
           terms.push("");
           this.value = terms.join("");
@@ -93,7 +99,7 @@
       {#window.chatSocket = new WebSocket(#}
       {#  'ws://' + window.location.host + '/ws/asset/' + $('#file').val() + '/');#}
       window.chatSocket = new WebSocket(
-        'ws://' + window.location.host + '{% url "asset-url:local-tailf-websocket" %}'  + "?log_path=" + path);
+        'ws://' + window.location.host + '{% url "asset-url:local-tailf-websocket" %}'  + "?log_path={{ root_path }}" + path);
       chatSocket.onmessage = function(e) {
 
         var data = JSON.parse(e.data);
@@ -117,11 +123,11 @@
 
 
   function goclose() {
-    console.log(window.chatSocket);
-    window.chatSocket.close();
+
     window.chatSocket.onclose = function(e) {
       toastr.success('已终止日志监听！')
     };
+    window.chatSocket.close();
   }
     </script>
         {% endblock %}
