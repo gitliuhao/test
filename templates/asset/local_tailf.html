@@ -6,13 +6,14 @@
 {% block content %}
 
     <div class="col-sm-8">
-      <select class="form-control", name="asset_id">
-        <option value="">root@127.0.0.1</option>
-      </select>
     </div>
     <div class="col-sm-8">
-        <input class="form-control-static" name="path1" value="{{ root_path }}" disabled="disabled">
-        <input id="autocomplete-ajax" class="form-control-static" name="path">
+{#        <input class="form-control-static" name="path1" value="{{ root_path }}" disabled="disabled">#}
+              <select class="form-control", name="asset_id" id="searh_path">
+                  {% for s_path in search_path_list %}
+        <option value="{{ s_path }}">{{ s_path }}</option>
+                  {% endfor %}
+      </select>
 {#        <input id="autocomplete-ajax" class="form-control" name="path" value="/data/xls/runtime/">#}
 {#        <input type="text" name="country" id="autocomplete-ajax-x" disabled="disabled" style="color: #CCC; position: absolute; background: transparent; z-index: 1;"/>#}
 {#        <input class="form-control" name="server_ip" value="{{ request.GET.server_ip }}", type="hidden">#}
@@ -41,65 +42,67 @@
  <script>
 /*global $, countries */
 
-  $(function() {
-    function split( val ) {
-      return val.split();
-    }
-    function extractLast( term ) {
+  {#$(function() {#}
+  {#  function split( val ) {#}
+  {#    return val.split();#}
+  {#  }#}
+  {#  function extractLast( term ) {#}
       {#return split( term ).pop();#}
-      return term;
-    }
-
-    $( "#autocomplete-ajax" )
-      // 当选择一个条目时不离开文本域
-      .bind( "keydown", function( event ) {
-        if ( event.keyCode === $.ui.keyCode.TAB &&
-            $( this ).data( "ui-autocomplete" ).menu.active ) {
-          event.preventDefault();
-        }
-      })
-      .autocomplete({
-        source: function( request, response ) {
-          $.getJSON( "{% url 'asset-url:local-file' %}", {
-            local_path: extractLast(  "{{ root_path }}" + request.term )
-          }, response );
-        },
-        search: function() {
-          // 自定义最小长度
-          var term = extractLast( this.value );
-          if ( term.length < 1 ) {
-            return false;
-          }
-        },
-        focus: function() {
-          // 防止在获得焦点时插入值
-          return false;
-        },
-        select: function( event, ui ) {
-          var terms = split( this.value );
-          // 移除当前输入
-          terms.pop();
-          var default_path = "{{ root_path }}"
-          // 添加被选项
-          terms.push( ui.item.value.substring(default_path.length) );
-          // 添加占位符，在结尾添加逗号+空格
-          terms.push("");
-          this.value = terms.join("");
-          return false;
-        }
-      });
-  });
+  {#    return term;#}
+  {#  }#}
+  {##}
+  {#  $( "#autocomplete-ajax" )#}
+  {#    // 当选择一个条目时不离开文本域#}
+  {#    .bind( "keydown", function( event ) {#}
+  {#      if ( event.keyCode === $.ui.keyCode.TAB &&#}
+  {#          $( this ).data( "ui-autocomplete" ).menu.active ) {#}
+  {#        event.preventDefault();#}
+  {#      }#}
+  {#    })#}
+  {#    .autocomplete({#}
+  {#      source: function( request, response ) {#}
+  {#        $.getJSON( "{% url 'asset-url:local-file' %}", {#}
+  {#          local_path: extractLast(  "{{ root_path }}" + request.term )#}
+  {#        }, response );#}
+  {#      },#}
+  {#      search: function() {#}
+  {#        // 自定义最小长度#}
+  {#        var term = extractLast( this.value );#}
+  {#        if ( term.length < 1 ) {#}
+  {#          return false;#}
+  {#        }#}
+  {#      },#}
+  {#      focus: function() {#}
+  {#        // 防止在获得焦点时插入值#}
+  {#        return false;#}
+  {#      },#}
+  {#      select: function( event, ui ) {#}
+  {#        var terms = split( this.value );#}
+  {#        // 移除当前输入#}
+  {#        terms.pop();#}
+  {#        var default_path = "{{ root_path }}"#}
+  {#        // 添加被选项#}
+  {#        terms.push( ui.item.value.substring(default_path.length) );#}
+  {#        // 添加占位符，在结尾添加逗号+空格#}
+  {#        terms.push("");#}
+  {#        this.value = terms.join("");#}
+  {#        return false;#}
+  {#      }#}
+  {#    });#}
+  {#});#}
 
 
 
   function connect() {
-    var path =  $('#autocomplete-ajax').val();
+    {#var path =  $('#autocomplete-ajax').val();#}
+    var path =  $('#searh_path').val();
     console.log(path)
     if (path) {
       {#window.chatSocket = new WebSocket(#}
       {#  'ws://' + window.location.host + '/ws/asset/' + $('#file').val() + '/');#}
       window.chatSocket = new WebSocket(
-        'ws://' + window.location.host + '{% url "asset-url:local-tailf-websocket" %}'  + "?log_path={{ root_path }}" + path);
+        {#'ws://' + window.location.host + '{% url "asset-url:local-tailf-websocket" %}'  + "?log_path={{ root_path }}" + path);#}
+        'ws://' + window.location.host + '{% url "asset-url:local-tailf-websocket" %}'  + "?log_path=" + path);
       chatSocket.onmessage = function(e) {
 
         var data = JSON.parse(e.data);
