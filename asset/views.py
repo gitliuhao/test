@@ -13,37 +13,7 @@ from asset.models import Asset
 from asset.task import ControlSsh
 
 # Create your views here.
-from asset.utils import traverse
-
-
-def system_path_search(curpath):
-    find_t =''
-    if curpath[-1] != "/":
-        *curpath_list, find_t = curpath.split('/')
-        curpath = '/'.join(curpath_list) + '/'
-    try:
-        cur_list = [t for t in os.listdir(curpath)]
-        if find_t:
-            cur_list = [t for t in  cur_list if find_t in t]
-        return cur_list
-    except FileNotFoundError:
-        return []
-    # find_t, curpath_list='', []
-    # # 判断路径是否包含'/'
-    # # 尾部名称find_t默认为''
-    # if curpath[-1]!='/':
-    #     #包含则去掉尾数路径名称并赋值
-    #     *curpath_list, find_t = curpath.split('/')
-    #     # 重新分配路径
-    #     curpath = '/'.join(curpath_list) + '/'
-    # try:
-    #     d_list = os.listdir(curpath)
-    #     search_list = [curpath+ t for t in d_list if find_t in t]
-    #     return search_list
-    # except FileNotFoundError:
-    #     return []
-
-
+from asset.utils import traverse, system_path_search
 
 
 class AssetListView(ListView):
