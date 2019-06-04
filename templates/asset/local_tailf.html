@@ -95,8 +95,9 @@
 
   function connect() {
     {#var path =  $('#autocomplete-ajax').val();#}
-    var path =  $('#searh_path').val();
-    console.log(path)
+      if (window.chatSocket){logreload();}
+
+    var path =  "{{ root_path }}" + $('#searh_path').val();
     if (path) {
       {#window.chatSocket = new WebSocket(#}
       {#  'ws://' + window.location.host + '/ws/asset/' + $('#file').val() + '/');#}
@@ -112,11 +113,10 @@
         $('#chat-log').scrollTop($('#chat-log')[0].scrollHeight);
       };
 
-      chatSocket.onerror = function(e) {
-        toastr.error('服务端连接异常！')
-      };
+
 
       chatSocket.onclose = function(e) {
+          console.log(e)
         toastr.error('websocket已关闭！')
       };
     } else {
@@ -125,11 +125,21 @@
   }
 
 
+  function logreload() {
+      window.chatSocket.onclose = function(e) {
+      toastr.success()
+    };
+            chatSocket.onerror = function(e) {
+        toastr.success()
+      };
+    window.chatSocket.close();
+  }
   function goclose() {
 
     window.chatSocket.onclose = function(e) {
       toastr.success('已终止日志监听！')
     };
+
     window.chatSocket.close();
   }
     </script>
