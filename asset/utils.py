@@ -2,6 +2,10 @@ import os
 
 
 def traverse(f):
+    '''
+    :param f: 检索路径
+    :return: list => [(ctime, path_name)]
+    '''
     fs = os.listdir(f)
     search_file_list = []
     for f1 in fs:
@@ -9,7 +13,8 @@ def traverse(f):
         if os.path.isdir(tmp_path):
             search_file_list += traverse(tmp_path)
         else:
-            search_file_list.append(tmp_path)
+            file_ctime = os.path.getctime(tmp_path)
+            search_file_list.append((file_ctime, tmp_path))
     return search_file_list
 
 

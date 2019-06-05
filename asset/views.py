@@ -72,7 +72,9 @@ def tailf(request):
 
 def local_tailf(request):
     root_path = "/data/xls/runtime/"
-    search_path_list = map(lambda x: x[len(root_path):],traverse(root_path))
+    # 倒叙取值
+    search_path_list = map(lambda x: x[-1][len(root_path):],
+        sorted(traverse(root_path), key=lambda x: x[0], reverse=True))
     return render(request, 'asset/local_tailf.html', {'root_path': root_path,
                                                       'search_path_list': search_path_list})
 
