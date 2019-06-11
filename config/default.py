@@ -18,12 +18,17 @@ from blueapps.conf.default_settings import *  # noqa
 #     # account app
 #     'blueapps.account',
 # )
+import sys
+
+sys.path.insert(0, os.path.join(BASE_DIR, "demoapps"))
+
 
 # 请在这里加入你的自定义 APP
 INSTALLED_APPS += (
     'home_application',
     'mako_application',
     'asset',
+    'jenkins',
 )
 
 # 这里是默认的中间件，大部分情况下，不需要改动

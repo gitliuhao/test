@@ -1,5 +1,4 @@
 import json
-import os
 
 from django.http import JsonResponse
 from django.http.response import HttpResponse
@@ -13,7 +12,8 @@ from asset.models import Asset
 from asset.task import ControlSsh
 
 # Create your views here.
-from asset.utils import traverse, system_path_search
+# from sset import traverse, system_path_search
+from asset.utils import system_path_search, traverse
 
 
 class AssetListView(ListView):
@@ -21,12 +21,12 @@ class AssetListView(ListView):
 
 
 def asset(request):
-    return render(request, 'asset/asset_list.html')
+    return render(request, 'demoapps/asset/asset_list.html')
 
 
 class AssetCreateView(CreateView):
     form_class = AssetForm
-    template_name = '../templates/asset/asset_form.html'
+    template_name = '../templates/demoapps/asset/asset_form.html'
     success_url = reverse_lazy('asset-url:asset-list')
     model = Asset
 
@@ -38,7 +38,7 @@ class AssetCreateView(CreateView):
 class AssetUpdateView(UpdateView):
     pk_url_kwarg = 'id'
     form_class = AssetForm
-    template_name = 'asset/asset_form.html'
+    template_name = 'demoapps/asset/asset_form.html'
     success_url = reverse_lazy('asset-url:asset-list')
     model = Asset
 
@@ -67,7 +67,7 @@ def tailf(request):
             log_list += xssh.find_log_list(path)
         except Exception as e:
             kwargs_data['errors'] = str(e)
-    return render(request, '../templates/asset/tailf.html', kwargs_data)
+    return render(request, '../templates/demoapps/asset/tailf.html', kwargs_data)
 
 
 def local_tailf(request):
@@ -75,7 +75,7 @@ def local_tailf(request):
     # 倒叙取值
     search_path_list = map(lambda x: x[-1][len(root_path):],
         sorted(traverse(root_path), key=lambda x: x[0], reverse=True))
-    return render(request, 'asset/local_tailf.html', {'root_path': root_path,
+    return render(request, 'demoapps/asset/local_tailf.html', {'root_path': root_path,
                                                       'search_path_list': search_path_list})
 
 
