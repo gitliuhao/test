@@ -2,7 +2,7 @@
 {% block content %}
 <div class="container-fluid">
     <div class="col-sm-2">
-        <a class="btn btn-success" href="{% url 'asset-url:asset-create' %}">添加配置</a>
+        <a class="btn btn-success" href="{% url 'asset-url:asset-create' %}">添加任务</a>
     </div>
 
 	<table class="table table-bordered">
@@ -16,14 +16,14 @@
 			</tr>
 		</thead>
 		<tbody>
-            {% for object in object_list %}
+            {% for job in jobs %}
 			<tr>
-				<td>{{ object.host }}</td>
+				<td>{{ job.name }}</td>
 				<td>{{ object.username }}</td>
 				<td>{{ object.ssh_secret_key.url }}</td>
                 <td>
-                    <a class="btn btn-success" href="{% url 'asset-url:asset-update' object.id %}">编辑</a>
-                    <a class="btn btn-danger" id="clickmodel" data-whatever="{% url 'asset-url:asset-delete' object.id %}">删除</a>
+                    <a class="btn btn-success" href="{#% url 'asset-url:asset-update' object.id %#}">编辑</a>
+                    <a class="btn btn-danger" id="clickmodel" data-whatever="{#% url 'asset-url:asset-delete' object.id %#}">删除</a>
 {#                    <a class="btn btn-danger" data-toggle="modal" data-target="#myModal">删除</a>#}
                 </td>
 			</tr>
