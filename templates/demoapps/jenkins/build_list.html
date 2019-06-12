@@ -1,0 +1,35 @@
+{% extends "demoapps/base.html" %}
+{% block content %}
+<div class="col-sm-8">
+    <div class="col-sm-2">
+        <a class="btn btn-success" href="{% url 'asset-url:asset-create' %}">添加任务</a>
+    </div>
+<div class="container-fluid">
+
+	<table class="table table-bordered">
+		<thead>
+			<tr>
+				<th>#id</th>
+				<th>时间</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody>
+            {% for build in builds %}
+			<tr>
+				<td>{{ build.number }}</td>
+				<td>{{ build.datetime }}
+                </td>
+                <td>
+{#                    <a class="btn btn-success" href="{#% url 'asset-url:asset-update' object.id %}">编辑</a>#}
+{#                    <a class="btn btn-danger" id="clickmodel" data-whatever="{#% url 'asset-url:asset-delete' object.id %}">删除</a>#}
+{#                    <a class="btn btn-danger" data-toggle="modal" data-target="#myModal">删除</a>#}
+                    <a href="{% url 'jenkins_a-url:job-build-console-input' name build.number %}">查看控制台输出日志</a>
+                </td>
+			</tr>
+            {% endfor %}
+		</tbody>
+	</table>
+</div>
+</div>
+{% endblock %}

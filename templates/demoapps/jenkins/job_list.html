@@ -1,30 +1,44 @@
 {% extends "demoapps/base.html" %}
 {% block content %}
-<div class="container-fluid">
-    <div class="col-sm-2">
+        <div class="col-sm-2">
         <a class="btn btn-success" href="{% url 'asset-url:asset-create' %}">添加任务</a>
     </div>
-
+<div class="container-fluid">
 	<table class="table table-bordered">
 		<thead>
 			<tr>
-				<th>ip</th>
-				<th>用户名</th>
-                <th>秘钥</th>
-				<th>操作</th>
-
+				<th>名称</th>
+				<th>上次成功</th>
+                <th>上次失败</th>
+				<th>管理</th>
 			</tr>
 		</thead>
 		<tbody>
             {% for job in jobs %}
 			<tr>
 				<td>{{ job.name }}</td>
-				<td>{{ object.username }}</td>
-				<td>{{ object.ssh_secret_key.url }}</td>
+				<td>
+                    {% if job.lastSuccessfulBuild %}
+                        {{ job.lastSuccessfulBuild.datetime }} - {{ job.lastSuccessfulBuild.number }}
+                    {% else %}
+                        没有
+                    {% endif %}
+                </td>
+				<td>
+                    {% if job.lastFailedBuild %}
+                        {{ job.lastFailedBuild.datetime }} - {{ job.lastFailedBuild.number }}
+                    {% else %}
+                        没有
+                    {% endif %}
+                </td>
                 <td>
                     <a class="btn btn-success" href="{#% url 'asset-url:asset-update' object.id %#}">编辑</a>
                     <a class="btn btn-danger" id="clickmodel" data-whatever="{#% url 'asset-url:asset-delete' object.id %#}">删除</a>
 {#                    <a class="btn btn-danger" data-toggle="modal" data-target="#myModal">删除</a>#}
+                    {% if job.lastBuild %}
+                    <a href="{% url 'jenkins_a-url:job-build-list' job.name %}">查看构建历史</a>
+                    {% endif %}
+
                 </td>
 			</tr>
             {% endfor %}

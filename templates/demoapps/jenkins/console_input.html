@@ -1,0 +1,9 @@
+{% extends 'demoapps/base.html' %}
+{% block content %}
+<div class="col-sm-12">
+{% for build_console_output in build_console_output_list %}
+  <p>{{ build_console_output }}</p>
+{% endfor %}
+</div>
+
+{% endblock %}
