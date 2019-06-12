@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views import View
 
+from jenkins_a.forms import JobConfForm
 from jenkins_a.utils import stamp_to_datetime
 
 
@@ -61,3 +62,9 @@ class JobConsoleInputView(View):
         build_console_output = server.get_build_console_output(name=name, number=int(number))
         build_console_output_list = build_console_output.split('\n')
         return render(request, 'demoapps/jenkins/console_input.html', {'build_console_output_list': build_console_output_list})
+
+
+class JobCreateView(View):
+    def get(self, request, *args, **kwargs):
+        forms = JobConfForm()
+        return render(request, 'demoapps/jenkins/job_config_form.html', {'forms': forms})
