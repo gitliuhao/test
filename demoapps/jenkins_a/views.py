@@ -1,7 +1,7 @@
 import datetime
 
 import jenkins
-from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.views import View
@@ -66,6 +66,13 @@ class JobCreateView(View):
         return HttpResponseRedirect(reverse('jenkins_a-url:job-list'))
 
 
+class JobDeleteView(View):
+    def get(self, request, name, *args, **kwargs):
+        server = JenkinsServer()
+        server.delete_job(name)
+        return JsonResponse({'success': '删除成功'})
+
+
 class JobUpdateView(View):
     ''' Job 配置修改 '''
     def get(self, request, name, *args, **kwargs):
@@ -96,3 +103,16 @@ class JobConfigView(View):
         response = HttpResponse(job_xml, content_type="application/xml")
         response['Content-Disposition'] =  'attachment;filename="%s.xml"' % name
         return response
+
+
+class JobBuildView(View):
+    ''' Job 立即构建
+    '''
+    def post(self, request, *args, **kwargs):
+        server = JenkinsServer()
+        name = request.POST.get('name')
+        try:
+            queue = server.build_job(name)
+            return JsonResponse({'succes': True})
+        except jenkins.EmptyResponseException as e:
+            return JsonResponse({'succes': False, 'error': str(e)[:200]})
