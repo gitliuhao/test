@@ -32,7 +32,7 @@
                     {% endif %}
                 </td>
                 <td>
-                    <a class="btn btn-info" href="{#% url 'asset-url:asset-update' object.id %#}">修改配置</a>
+                    <a class="btn btn-info" href="{% url 'jenkins_a-url:job-config-update' job.name %}">修改配置</a>
                     <a class="btn btn-primary" href="{#% url 'asset-url:asset-update' object.id %#}">构建</a>
                     <a class="btn btn-danger" id="clickmodel" data-whatever="{#% url 'asset-url:asset-delete' object.id %#}">删除</a>
 {#                    <a class="btn btn-danger" data-toggle="modal" data-target="#myModal">删除</a>#}

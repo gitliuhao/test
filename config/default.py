@@ -23,6 +23,12 @@ import sys
 sys.path.insert(0, os.path.join(BASE_DIR, "demoapps"))
 
 
+JENKINSCONF = {
+    'url': 'http://localhost:8080',
+    "username": 'jenkins',
+    "password": 'jenkins'
+}
+
 # 请在这里加入你的自定义 APP
 INSTALLED_APPS += (
     'home_application',

@@ -10,22 +10,40 @@
 <div class="container">
 	<div class="row clearfix">
 		<div class="col-md-12 column">
-			<form role="form">
-				<div class="form-group">
-					 <label for="exampleInputEmail1">Email address</label><input type="email" class="form-control" id="exampleInputEmail1" />
-				</div>
-				<div class="form-group">
-					 <label for="exampleInputPassword1">Password</label><input type="password" class="form-control" id="exampleInputPassword1" />
-				</div>
-				<div class="form-group">
-					 <label for="exampleInputFile">File input</label><input type="file" id="exampleInputFile" />
-					<p class="help-block">
-						Example block-level help text here.
-					</p>
-				</div>
-				<div class="checkbox">
-					 <label><input type="checkbox" />Check me out</label>
-				</div> <button type="submit" class="btn btn-default">Submit</button>
+			<form role="form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+                {% for form  in  forms %}
+                     <label for="exampleInputEmail1">{{ form.label }}</label>{{ form }}
+                    {% if form.errors %}
+                    <font style="color: red">{{ form.errors.0 }}</font>
+
+                    {% endif %} <br>
+                {% endfor %}
+                {% if error %}
+                    <font style="color: red">{{ error }}</font>
+
+                {% endif %} <br>
+                {% if forms.initial %}
+                    <a href="{% url 'jenkins_a-url:get-job-config' forms.initial.name %}">获取配置</a><br>
+                {% endif %}
+{#				<div class="form-group">#}
+{#					 <label for="exampleInputEmail1">Email address</label><input type="email" class="form-control" id="exampleInputEmail1" />#}
+{#				</div>#}
+{#				<div class="form-group">#}
+{#					 <label for="exampleInputPassword1">Password</label><input type="password" class="form-control" id="exampleInputPassword1" />#}
+{#				</div>#}
+{#				<div class="form-group">#}
+{#					 <label for="exampleInputFile">File input</label><input type="file" id="exampleInputFile" />#}
+{#					<p class="help-block">#}
+{#						Example block-level help text here.#}
+{#					</p>#}
+{#				</div>#}
+{#				<div class="checkbox">#}
+{#					 <label><input type="checkbox" />Check me out</label>#}
+{#				</div>#}
+                <br>
+                <button type="submit" class="btn btn-success">提交</button>
+                <button type="button" class="btn btn-default" onclick="location.href='{% url 'jenkins_a-url:job-list' %}'">取消</button>
 			</form>
 		</div>
 	</div>
