@@ -24,7 +24,7 @@ class JenkinsServer(jenkins.Jenkins):
     def get_all_job_details(self):
         jobs_data_list = []
         try:
-            jobs = self.get_all_jobs()
+            jobs = self.get_jobs()
         except IOError:
             raise Http404("can't not connect jenkins server")
 
