@@ -66,7 +66,6 @@
 {% block js %}
 <script>
 function job_build(name) {
-    console.log(name)
     var url = "{% url 'jenkins_a-url:get-job-build' %}"
     $.post(
         url,

@@ -13,4 +13,5 @@ urlpatterns = (
     url(r'^build/(?P<name>(.*))/(?P<number>\d+)/console/$', views.JobConsoleInputView.as_view(),
         name='job-build-console-input'),
     url(r'^build/(?P<name>(.*))/list/$', views.JobBuildListView.as_view(), name='job-build-list'),
+    url(r'^build/(?P<name>(.*))/list/api/$', views.JobBuildListApi.as_view(), name='job-build-list-api'),
 )

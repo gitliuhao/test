@@ -1,35 +1,116 @@
 {% extends "demoapps/base.html" %}
 {% block content %}
 <div class="col-sm-8">
-{#    <div class="col-sm-2">#}
-{#        <a class="btn btn-success" href="{% url 'jenkins_a-url:job-create' %}">添加任务</a>#}
-{#    </div>#}
-<div class="container-fluid">
 
-	<table class="table table-bordered">
-		<thead>
-			<tr>
-				<th>#id</th>
-				<th>时间</th>
-				<th>操作</th>
-			</tr>
-		</thead>
-		<tbody>
-            {% for build in builds %}
-			<tr>
-				<td>{{ build.number }}</td>
-				<td>{{ build.datetime }}
-                </td>
-                <td>
-{#                    <a class="btn btn-success" href="{#% url 'asset-url:asset-update' object.id %}">编辑</a>#}
-{#                    <a class="btn btn-danger" id="clickmodel" data-whatever="{#% url 'asset-url:asset-delete' object.id %}">删除</a>#}
-{#                    <a class="btn btn-danger" data-toggle="modal" data-target="#myModal">删除</a>#}
-                    <a href="{% url 'jenkins_a-url:job-build-console-input' name build.number %}">查看控制台输出日志</a>
-                </td>
-			</tr>
-            {% endfor %}
-		</tbody>
-	</table>
+<div class="container-fluid">
+    <div class="col-sm-2">
+        <button class="btn btn-primary" onclick="job_build('{{ name }}')">构建</button>
+    </div>
+<div class="col-sm-12 ">
+    <table class="table table-bordered" id="mytab">
+	</table></div>
 </div>
 </div>
+{% endblock %}
+{% block js %}
+    {% load static %}
+    <script src="{% static '/demoapps/asset/js/bootstrap-table.min.js' %}"></script>
+    <script>
+    $('#mytab').bootstrapTable({
+	method : 'get',
+	url : "{% url 'jenkins_a-url:job-build-list-api' name %}",//请求路径
+	striped : true, //是否显示行间隔色
+	pageNumber : 1, //初始化加载第一页
+	pagination : true,//是否分页
+	sidePagination : 'client',//server:服务器端分页|client：前端分页
+	pageSize : 10,//单页记录数
+	pageList : [ 5, 10, 15],//可选择单页记录数
+	showRefresh : true,//刷新按钮
+	queryParams : function(params) {//上传服务器的参数
+		var temp = {//如果是在服务器端实现分页，limit、offset这两个参数是必须的
+			limit : params.limit, // 每页显示数量
+			offset : params.offset, // SQL语句起始索引
+			//page : (params.offset / params.limit) + 1, //当前页码
+
+			Name : $('#search_name').val(),
+			Tel : $('#search_tel').val()
+		};
+		return temp;
+	},
+	columns : [ {
+		title : '# id',
+		field : 'number',
+		sortable : true,
+	}, {
+		title : '时间',
+		field : 'datetime',
+		sortable : true
+	}, {
+		title : '状态',
+		field : 'detail',
+        formatter : build_status
+	},  {
+		title : '操作',
+		field : 'detail',
+		formatter : operation,//对资源进行操作
+	} ]
+})
+
+    // 查看构建的状态
+function build_status(value, row, index) {
+    console.log(row)
+    result = row.detail.result;
+    if (result == "ABORTED"){
+        html = "<img src=\"{% static '/demoapps/jenkins/img/aborted.png' %}\">";
+    }else if (result == null){
+        html = "<img src=\"{% static '/demoapps/jenkins/img/aborted_anime.gif' %}\">";
+    }else if (result == "FAILURE"){
+        html = "<img src=\"{% static '/demoapps/jenkins/img/red.png' %}\">";
+    }else{
+        html = "<img src=\"{% static '/demoapps/jenkins/img/blue.png' %}\">";
+    }
+
+    return html
+}
+
+//查看控制台输出日志
+function operation(value, row, index) {
+    var number = row.number;
+    var name = "{{ name }}"
+	var htm = "<a " +
+        "href=" +
+        "/jenkins/build/"+ +name + "/" + number + "/console/" +
+        " >查看控制台输出日志" +
+        "</a>"
+    console.log(htm)
+	return htm;
+}
+
+//查询按钮事件
+$('#search_btn').click(function() {
+	$('#mytab').bootstrapTable('refresh', {
+		url : 'user/getUserListPage'
+	});
+})
+
+
+
+function job_build(name) {
+    var url = "{% url 'jenkins_a-url:get-job-build' %}"
+    $.post(
+        url,
+        {name: name, csrfmiddlewaretoken: "{{ csrf_token  }}"
+        },
+        function (data, status) {
+            if (data['succes']==true){
+                alert('已提交构建')
+                window.location.reload();
+            }else{
+                alert('构建失败' + data['error'])
+            }
+        }
+    )
+
+}
+    </script>
 {% endblock %}

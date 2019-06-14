@@ -1,9 +1,83 @@
-{% extends 'demoapps/base.html' %}
+{% extends "demoapps/base.html" %}
+    {% load static %}
+{% block css %}
+    <link href="{% static '/asset/css/content/jquery-ui.min.css' %}" rel="stylesheet" />
+{% endblock %}
 {% block content %}
+    {#<div class="col-sm-2">#}
+{#  <input class="btn btn-success" type="button" onclick="connect()" value="开始监听"/><br/>#}
+{#</div>#}
+{#<div class="col-sm-2">#}
+{#  <input class="btn btn-warning btn-block" type="button" onclick="goclose()" value="终止监听"/><br/>#}
+{#</div>#}
+
 <div class="col-sm-12">
-{% for build_console_output in build_console_output_list %}
-  <p>{{ build_console_output }}</p>
-{% endfor %}
+  <textarea class="form-control" id="chat-log" disabled rows="30"></textarea>
 </div>
 
 {% endblock %}
+{% block js %}
+
+    <script type="text/javascript" src="{% static '/asset/js/jquery-ui.min.js' %}"></script>
+ <script>
+/*global $, countries */
+
+  {#$(function() {#}
+  {#  function split( val ) {#}
+  {#    return val.split();#}
+  {#  }#}
+  {#  function extractLast( term ) {#}
+      {#return split( term ).pop();#}
+  {#    return term;#}
+  {#  }#}
+  {##}
+  {#  $( "#autocomplete-ajax" )#}
+  {#    // 当选择一个条目时不离开文本域#}
+  {#    .bind( "keydown", function( event ) {#}
+  {#      if ( event.keyCode === $.ui.keyCode.TAB &&#}
+  {#          $( this ).data( "ui-autocomplete" ).menu.active ) {#}
+  {#        event.preventDefault();#}
+  {#      }#}
+  {#    })#}
+  {#    .autocomplete({#}
+  {#      source: function( request, response ) {#}
+  {#        $.getJSON( "{% url 'asset-url:local-file' %}", {#}
+  {#          local_path: extractLast(  "{{ root_path }}" + request.term )#}
+  {#        }, response );#}
+  {#      },#}
+  {#      search: function() {#}
+  {#        // 自定义最小长度#}
+  {#        var term = extractLast( this.value );#}
+  {#        if ( term.length < 1 ) {#}
+  {#          return false;#}
+  {#        }#}
+  {#      },#}
+  {#      focus: function() {#}
+  {#        // 防止在获得焦点时插入值#}
+  {#        return false;#}
+  {#      },#}
+  {#      select: function( event, ui ) {#}
+  {#        var terms = split( this.value );#}
+  {#        // 移除当前输入#}
+  {#        terms.pop();#}
+  {#        var default_path = "{{ root_path }}"#}
+  {#        // 添加被选项#}
+  {#        terms.push( ui.item.value.substring(default_path.length) );#}
+  {#        // 添加占位符，在结尾添加逗号+空格#}
+  {#        terms.push("");#}
+  {#        this.value = terms.join("");#}
+  {#        return false;#}
+  {#      }#}
+  {#    });#}
+  {#});#}
+var v = "{{ build_console_output_list }}";
+{#console.log(v)#}
+{#console.log(JSON.parse(v));#}
+{% for output in build_console_output_list%}
+    console.log("{{ output }}")
+    document.querySelector('#chat-log').value += "{{ output }}\n";
+{% endfor %}
+
+
+    </script>
+        {% endblock %}

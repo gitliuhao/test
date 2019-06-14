@@ -1,4 +1,5 @@
 import datetime
+import json
 
 import jenkins
 from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseBadRequest, JsonResponse
@@ -24,17 +25,21 @@ class JobsView(View):
 
 class JobBuildListView(View):
     def get(self, request, name, *args, **kwargs):
-        try:
-            server = JenkinsServer()
-            job_info = server.get_job_info(name=name)
-            builds = job_info.get('builds', [])
-            for b in builds:
-                timestamp = server.get_build_info(name=name, number=b['number'])['timestamp']
-                b['datetime'] = stamp_to_datetime(timestamp, unit='ms', format="%Y-%m-%d %H:%M")
-            return render(request, 'demoapps/jenkins/build_list.html', {'builds': builds, 'name': name})
+        return render(request, 'demoapps/jenkins/build_list.html', {'name': name})
 
-        except IOError:
-            return Http404()
+
+class JobBuildListApi(View):
+    def get(self, request, name, *args, **kwargs):
+        server = JenkinsServer()
+        job_info = server.get_job_info(name=name)
+        builds = job_info.get('builds', [])
+        for b in builds:
+            build_info = server.get_build_info(name=name, number=b['number'])
+            timestamp = build_info['timestamp']
+            b['detail'] = build_info
+            b['datetime'] = stamp_to_datetime(timestamp, unit='ms', format="%Y-%m-%d %H:%M")
+        return HttpResponse(json.dumps(builds), content_type="application/json")
+
 
 class JobConsoleInputView(View):
     def get(self, request, name, number, *args, **kwargs):
