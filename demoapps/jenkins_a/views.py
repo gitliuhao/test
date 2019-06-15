@@ -2,6 +2,7 @@ import datetime
 import json
 
 import jenkins
+from django.core.cache import cache
 from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
@@ -46,7 +47,34 @@ class JobConsoleInputView(View):
         server = jenkins.Jenkins('http://localhost:8080', username='jenkins', password='jenkins')
         build_console_output = server.get_build_console_output(name=name, number=int(number))
         build_console_output_list = build_console_output.split('\n')
-        return render(request, 'demoapps/jenkins/console_input.html', {'build_console_output_list': build_console_output_list})
+        return render(request, 'demoapps/jenkins/console_input.html',
+                      {'build_console_output_list': build_console_output_list,
+                       'name': name, 'number': number})
+
+
+class JobConsoleInputApi(View):
+    def get(self, request, *args, **kwargs):
+        name, number = request.GET.get('name'), request.GET.get('number')
+        server = JenkinsServer()
+        number = int(number)
+        build_console_output = server.get_build_console_output(name=name, number=number)
+        build_info = server.get_build_info(name=name, number=number)
+        build_console_output_list = build_console_output.split('\n')
+        building = build_info['building']
+        cache_name = "{number}_{name}_build_console_output_list".format(name=name, number=number)
+        change_output_list = []
+        # 设置缓存名称
+        cach_list = cache.get(cache_name)
+        # 获取缓存值，如果不存在则设置缓存值
+        if cach_list:
+            change_output_list = build_console_output_list[len(cach_list):]
+        if building:
+            cache.set(cache_name, build_console_output_list)
+        else:
+            cache.delete(cache_name)
+
+        return JsonResponse({'build_console_output_list': build_console_output_list,
+                             'building': building, "change_output_list": change_output_list})
 
 
 class JobCreateView(View):

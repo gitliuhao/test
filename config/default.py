@@ -29,6 +29,17 @@ JENKINSCONF = {
     "password": 'jenkins'
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': '/var/tmp/django_cache',
+        'TIMEOUT': 60,
+        'OPTIONS': {
+            'MAX_ENTRIES': 1000
+        }
+    }
+}
+
 # 请在这里加入你的自定义 APP
 INSTALLED_APPS += (
     'home_application',
