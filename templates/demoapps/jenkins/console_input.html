@@ -25,11 +25,10 @@
   url:"{% url 'jenkins_a-url:job-build-console-input-api' name number %}",
     success:
   function(data) {
-      bcl = data.build_console_output_list;
-      for (var i = 0; i < bcl.length; i++) {
-          document.querySelector('#chat-log').value += bcl[i] + '\n';
-      }
-      $('#chat-log').scrollTop($('#chat-log')[0].scrollHeight);
+      build_console_output = data.build_console_output;
+      document.querySelector('#chat-log').value += build_console_output;
+        $('#chat-log').scrollTop($('#chat-log')[0].scrollHeight);
+
   }
  })
 
@@ -43,12 +42,8 @@ var s = setInterval(reload_console_log, 1000)
       url:"{% url 'jenkins_a-url:job-build-console-input-api' name number %}",
         success:
       function(data) {
-          bcl = data.change_output_list;
-          for (var i = 0; i < bcl.length; i++) {
-              document.querySelector('#chat-log').value += bcl[i] + '\n';
-              // 跳转到页面底部
-
-          }
+          build_console_output = data.build_console_output;
+            document.querySelector('#chat-log').value += build_console_output + '\n';
           $('#chat-log').scrollTop($('#chat-log')[0].scrollHeight);
           if (data.building==false){
                 clearTimeout(s);}

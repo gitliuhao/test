@@ -23,8 +23,8 @@
   <![endif]-->
 
   <!-- Google Font -->
-  <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+{#  <link rel="stylesheet"#}
+{#        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">#}
 
 {% endblock %}
 
@@ -169,16 +169,12 @@ function output_console_log(name, number){
         method: "get",
         url:"{% url 'jenkins_a-url:job-build-console-input-api' %}" + parameter,
         success: function(data) {
-            bcl = data.build_console_output_list;
-            for (var i = 0; i < bcl.length; i++) {
-
-                console.log(i)
-                document.querySelector('#chat-log').value += bcl[i] + '\n';
-            }
+            build_console_output = data.build_console_output;
+            document.querySelector('#chat-log').value += build_console_output;
             $('#chat-log').scrollTop($('#chat-log')[0].scrollHeight);
         }
     });
-    {#var s = setInterval(function(){ reload_console_log(name, number); }, 1000);#}
+    var s = setInterval(function(){ reload_console_log(name, number); }, 1000);
 }
 
 function reload_console_log(name, number){
@@ -187,11 +183,8 @@ function reload_console_log(name, number){
             method: "get",
             url:"{% url 'jenkins_a-url:job-build-console-input-api'  %}" + parameter,
             success: function(data) {
-                bcl = data.change_output_list;
-                for (var i = 0; i < bcl.length; i++) {
-                    document.querySelector('#chat-log').value += bcl[i] + '\n';
-                // 跳转到页面底部
-                }
+                change_output = data.change_output;
+                    document.querySelector('#chat-log').value += change_output;
                 $('#chat-log').scrollTop($('#chat-log')[0].scrollHeight);
                 if (data.building==false){
                     clearTimeout(s);
