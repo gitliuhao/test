@@ -55,3 +55,12 @@ class JenkinsServer(jenkins.Jenkins):
             jobs_data_list.append(job_data)
 
         return jobs_data_list
+
+    def get_job_building_list(self):
+        builds = self.get_running_builds()
+        for build in builds:
+            name = build['name']
+            build_info = self.get_build_info(name, build['number'])
+            build_info['time'] = stamp_to_datetime(build_info['timestamp'], unit='ms', format="%Y-%m-%d %H:%M")
+            build['detail'] = build_info
+        return builds

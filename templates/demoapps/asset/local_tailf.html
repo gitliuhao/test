@@ -4,11 +4,9 @@
     <link href="{% static '/asset/css/content/jquery-ui.min.css' %}" rel="stylesheet" />
 {% endblock %}
 {% block content %}
-
+<div class="king-layout1-content" style="margin-left:216px;">
     <div class="col-sm-8">
-    </div>
-    <div class="col-sm-8">
-              <select class="form-control", name="asset_id" id="searh_path">
+    <select class="form-control", name="asset_id" id="searh_path">
                   {% for s_path in search_path_list %}
         <option value="{{ s_path }}">{{ s_path }}</option>
                   {% endfor %}
@@ -30,8 +28,9 @@
 {#  <input class="btn btn-warning btn-block" type="button" onclick="goclose()" value="终止监听"/><br/>#}
 {#</div>#}
 
-<div class="col-sm-12">
-  <textarea class="form-control" id="chat-log" disabled rows="20"></textarea>
+    <div class="col-sm-12">
+      <textarea class="form-control" id="chat-log" disabled rows="40"></textarea>
+    </div>
 </div>
 
 {% endblock %}
@@ -93,6 +92,7 @@
 
 
   function connect() {
+    document.querySelector('#chat-log').value = "";
     {#var path =  $('#autocomplete-ajax').val();#}
       if (window.chatSocket){logreload();}
 

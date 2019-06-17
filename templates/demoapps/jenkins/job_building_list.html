@@ -1,0 +1,237 @@
+{% extends 'demoapps/base.html' %}
+{% load static %}
+{% block css %}
+<link href="https://magicbox.bk.tencent.com/static_api/v3/assets/bootstrap-3.3.4/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://magicbox.bk.tencent.com/static_api/v3/assets/datatables-1.10.7/dataTables.bootstrap.css" rel="stylesheet"/>
+<link href="https://magicbox.bk.tencent.com/static_api/v3/bk/css/bk.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+ <div class="king-layout1-content" style="margin-left:216px;">
+        <div class="col-md-4">
+          <div class="box">
+            <div class="box-header">
+              <button class="btn btn-primary" onclick="job_build('{{ name }}')">构建</button>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table id="example1" class="table table-bordered table-striped">
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <div class="col-md-6">
+            <textarea class="form-control" id="chat-log" disabled rows="35" cols="30"></textarea>
+        </div>
+        <!-- /.col -->
+
+ </div>
+{% endblock %}
+<!-- ./wrapper -->
+
+<!-- jQuery 3 -->
+{% block js %}
+{#<script src="{% static '/bower_components/jquery/dist/jquery.min.js' %}"></script>#}
+{#<!-- Bootstrap 3.3.7 -->#}
+{#<script src="{% static '/bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>#}
+{#<!-- DataTables -->#}
+{#<script src="{% static '/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>#}
+{#<script src="{% static '/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>#}
+{#<!-- SlimScroll -->#}
+{#<script src="{% static '/bower_components/jquery-slimscroll/jquery.slimscroll.min.js' %}"></script>#}
+{#<!-- FastClick -->#}
+{#<script src="{% static '/bower_components/fastclick/lib/fastclick.js' %}"></script>#}
+{#<!-- AdminLTE App -->#}
+{#<script src="{% static '/demoapps/js/adminlte.min.js' %}"></script>#}
+{#<!-- AdminLTE for demo purposes -->#}
+{#<script src="{% static '/demoapps/js/demo.js' %}"></script>#}
+<!-- page script -->
+{#<script src="{% static '/demoapps/asset/js/bootstrap-table.min.js' %}"></script>#}
+    <script src="https://magicbox.bk.tencent.com/static_api/v3/assets/datatables-1.10.7/jquery.dataTables.js"></script>
+<script src="https://magicbox.bk.tencent.com/static_api/v3/assets/datatables-1.10.7/dataTables.bootstrap.js"></script>
+
+<script>
+
+  $(function () {
+    //table2_demo4_js_start
+    //表格(DataTables)-4，综合示例
+    var language = {
+      search: '搜索：',
+      lengthMenu: "每页显示 _MENU_ 记录",
+      zeroRecords: "没找到相应的数据！",
+      info: "分页 _PAGE_ / _PAGES_",
+      infoEmpty: "暂无数据！",
+      infoFiltered: "(从 _MAX_ 条数据中搜索)",
+      paginate: {
+        first: '首页',
+        last: '尾页',
+        previous: '上一页',
+        next: '下一页',
+      }
+    }
+    $("#example1").dataTable({
+        autoWidth: false,
+        lengthChange: true, //不允许用户改变表格每页显示的记录数
+        pageLength : 5, //每页显示几条数据
+        lengthMenu: [5, 10, 20], //每页显示选项
+        pagingType: 'full_numbers',
+        ajax : "{% url 'jenkins_a-api-url:job-building-list' %}",
+        ordering: true,
+        columns : [
+          {data:"name",orderable: false},
+          {data:"position"},
+          {data:"salary"},
+          {data:"start_date"},
+          {data:"office"},
+          {data:"extn"},
+          {
+            data:null,
+            orderable:false,
+            render : function(data, type, row, meta){
+                return '<a class="king-btn king-default del">删除</a>';
+            }
+          }
+        ],
+        language:language
+    });
+
+    var t = $("#example1").DataTable();//获取datatables对象
+    //删除按钮绑定事件
+    $("#example1 tbody").on('click', 'a.del', function(){
+        var row = t.row( $(this).parents('tr') ),//获取按钮所在的行
+          data = row.data();
+        if(confirm('确定要删除'+data.name+' ?')){
+          row.remove().draw();
+        }
+
+    });
+    //table2_demo4_js_end
+  });
+
+
+
+
+
+  {#$(function () {#}
+  {#  $('#example1').DataTable(#}
+  {#      {'size': 20}#}
+  {#  )#}
+    {#$('#example2').DataTable({#}
+    {#  'paging'      : true,#}
+    {#  'lengthChange': false,#}
+    {#  'searching'   : false,#}
+    {#  'ordering'    : true,#}
+    {#  'info'        : true,#}
+    {#  'autoWidth'   : false#}
+    {#})#}
+  {#})#}
+
+{#    $('#example1').bootstrapTable({#}
+{#	method : 'get',#}
+{#	url : "{% url 'jenkins_a-api-url:job-building-list' %}", //请求路径#}
+{#	striped : true, //是否显示行间隔色#}
+{#	pageNumber : 1, //初始化加载第一页#}
+{#	pagination : true,//是否分页#}
+{#	sidePagination : 'client',//server:服务器端分页|client：前端分页#}
+{#	pageSize : 10,//单页记录数#}
+{#	pageList : [ 5, 10, 15],//可选择单页记录数#}
+{#	showRefresh : true,//刷新按钮#}
+{#	queryParams : function(params) {//上传服务器的参数#}
+{#		var temp = {//如果是在服务器端实现分页，limit、offset这两个参数是必须的#}
+{#			limit : params.limit, // 每页显示数量#}
+{#			offset : params.offset, // SQL语句起始索引#}
+{#			//page : (params.offset / params.limit) + 1, //当前页码#}
+{##}
+{#			Name : $('#search_name').val(),#}
+{#			Tel : $('#search_tel').val()#}
+{#		};#}
+{#		return temp;#}
+{#	},#}
+{#	columns : [ {#}
+{#		title : '# id',#}
+{#		field : 'number',#}
+{#		sortable : true,#}
+{#	}, {#}
+{#		title : '时间',#}
+{#		field : 'datetime',#}
+{#		sortable : true#}
+{#	}, {#}
+{#		title : '状态',#}
+{#		field : 'detail',#}
+{#        formatter : build_status#}
+{#	},  {#}
+{#		title : '操作',#}
+{#		field : 'detail',#}
+{#		formatter : operation,//对资源进行操作#}
+{#	} ]#}
+{#})#}
+
+    // 查看构建的状态
+function build_status(value, row, index) {
+    result = row.detail.result;
+    if (result == "ABORTED"){
+        html = "<img src=\"{% static '/demoapps/jenkins/img/aborted.png' %}\">";
+    }else if (result == null){
+        html = "<img src=\"{% static '/demoapps/jenkins/img/aborted_anime.gif' %}\">";
+    }else if (result == "FAILURE"){
+        html = "<img src=\"{% static '/demoapps/jenkins/img/red.png' %}\">";
+    }else{
+        html = "<img src=\"{% static '/demoapps/jenkins/img/blue.png' %}\">";
+    }
+
+    return html
+}
+//查看控制台输出日志
+function operation(value, row, index) {
+    var number = row.number;
+    var name = "{{ name }}"
+
+	var htm = "<a " +
+        "href=" +
+        "/jenkins/build/"+ name + "/" + number + "/console/" +
+        " >查看控制台输出日志" +
+        "</a>"
+
+    var htm = "<button type=\"button\" " +
+            "onclick=output_console_log(" +
+            "\"" + name +  "\"" +
+            "," +
+            number  + ")" +
+            " class=\"btn btn-info \">查看控制台输出</button>"
+	return htm;
+}
+
+
+function output_console_log(name, number){
+    var parameter = "?name=" + name + "&number=" + number
+    $.ajax({
+        method: "get",
+        url:"{% url 'jenkins_a-url:job-build-console-input-api' %}" + parameter,
+        success: function(data) {
+            build_console_output = data.build_console_output;
+            document.querySelector('#chat-log').value += build_console_output;
+            $('#chat-log').scrollTop($('#chat-log')[0].scrollHeight);
+        }
+    });
+    var s = setInterval(function(){ reload_console_log(name, number); }, 1000);
+}
+
+function reload_console_log(name, number){
+        var parameter = "?name=" + name + "&number=" + number;
+        $.ajax({
+            method: "get",
+            url:"{% url 'jenkins_a-url:job-build-console-input-api'  %}" + parameter,
+            success: function(data) {
+                change_output = data.change_output;
+                    document.querySelector('#chat-log').value += change_output;
+                $('#chat-log').scrollTop($('#chat-log')[0].scrollHeight);
+                if (data.building==false){
+                    clearTimeout(s);
+                }
+            }
+        })
+}
+</script>
+{% endblock %}
