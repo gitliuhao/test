@@ -64,3 +64,19 @@ class JenkinsServer(jenkins.Jenkins):
             build_info['time'] = stamp_to_datetime(build_info['timestamp'], unit='ms', format="%Y-%m-%d %H:%M")
             build['detail'] = build_info
         return builds
+
+    def get_job_build_faild_list(self):
+        jobs = self.get_jobs()
+        build_list = []
+        for job in jobs:
+            name = job['name']
+            job_info = self.get_job_info(name)
+            builds = job_info.get('builds', [])
+            for build in builds:
+                build_info = self.get_build_info(name, build['number'])
+                if build_info['result'] == 'FAILURE':
+                    build_info['time'] = stamp_to_datetime(build_info['timestamp'], unit='ms', format="%Y-%m-%d %H:%M")
+                    build['detail'] = build_info
+                    build['name'] = name
+                    build_list.append(build)
+        return build_list

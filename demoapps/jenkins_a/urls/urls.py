@@ -4,6 +4,7 @@ from jenkins_a.views import views
 
 urlpatterns = (
     url(r'^job/building/list/$', views.JobBuildingListView.as_view(), name='job-building-list'),
+    url(r'^job/build/failed/list/$', views.JobBuildFaildList.as_view(), name='job-build-failed-list'),
     url(r'^$', views.JenkinsView.as_view(), name='index'),
     url(r'^job/list/$', views.JobsView.as_view(), name='job-list'),
     url(r'^job/create/$', views.JobCreateView.as_view(), name='job-create'),

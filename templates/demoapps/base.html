@@ -64,7 +64,7 @@
                                     </a>
                                     <ul class="sub-menu">
                                         <li><a href="{% url 'jenkins_a-url:job-building-list' %}">正在构建<i class="fa fa-chevron-right pull-right"></i></a></li>
-                                        <li class="c-open"><a href="javascript:void(0);">构建失败<i class="fa fa-chevron-right pull-right"></i></a></li>
+                                        <li class="c-open"><a href="{% url 'jenkins_a-url:job-build-failed-list' %}">构建失败<i class="fa fa-chevron-right pull-right"></i></a></li>
                                     </ul>
                                 </li>
                                 <li class="has_submenu current">
@@ -85,6 +85,7 @@
             <!-- sidebar end -->
             <!-- content start -->
             <div class="king-content-wrap">
+                 <div class="panel-heading"> </div>
                 {% block content %}
                 {% endblock %}
             </div>
@@ -106,32 +107,20 @@
     <script src="http://magicbox.bk.tencent.com/static_api/analysis.js"></script>
 
     <script>
-$(function() {
-    // 渚ц竟浜岀骇鑿滃崟
-    $(".has_submenu > a").click(function(e) {
-
-        var menu = $(this).parent("li");
-        var sunMenu = $(this).next("ul");
-
-        if (menu.hasClass("open")) {
-            sunMenu.slideUp(200, function() {
-                menu.removeClass("open");
-            });
-
-        } else {
-            $(".navi > li > ul").slideUp(200);
-
-            setTimeout(function() {
-                $(".navi > li").removeClass("open");
-                sunMenu.slideDown(200);
-                menu.addClass("open");
-            }, 200);
-
-        }
-
-        return false;
-    });
-});
+        $(function(){
+             var li = $('.navi li');
+             li.each(function(){
+             $(this).click(function(){
+             if( $(this).hasClass('c-open')){
+                $(this).find('ul').slideUp(400);
+                $(this).removeClass('c-open');
+             }else{
+               $(this).find('ul').slideDown(400);
+               $(this).addClass('c-open');
+               }
+              })
+           });
+        })
 
 $(".has_submenu").each(function(){
     var t = this;
