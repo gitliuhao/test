@@ -85,8 +85,11 @@
             data:null,
             orderable:false,
             render : function(data, type, row, meta){
-              htm = '<a class="btn btn-success console_log">输出日志</a>&nbsp;' +
-                '<a class="btn btn-warning stop">停止构建</a>'
+              htm = "<button class=\"btn btn-success job_build\" >" + "构建"+
+                    "</button>&nbsp;"+
+                    "<button class=\"btn btn-danger delete\">" + "删除" +
+                    "</button>"
+              ;
               return htm
 
             }
@@ -94,48 +97,85 @@
           {
             orderable:false,
             render :function () {
-              return "<i class=\"glyphicon glyphicon-chevron-down\" style=\"color:silver\"></i>"
+              return "<i class=\"glyphicon glyphicon-chevron-down\" id=\"output_console_event\" style=\"color:silver\"></i>"
               {#return "<i class=\"glyphicon glyphicon-chevron-up\" style=\"color:silver\"></i>"#}
             }
           }
         ],
         language:language
     });
-
+    // 任务构建
     var t = $("#example1").DataTable();//获取datatables对象
-    //停止按钮绑定事件
-    $("#example1 tbody").on('click', 'a.stop', function(){
-        var row = t.row($(this).parents('tr') ),//获取按钮所在的行
-          data = row.data();
-        console.log(data)
-        if(confirm('确定要停止吗'+data.name+' ?')){
-          row.remove().draw();
+
+    $("#example1 tbody").on('click', 'button.job_build', function () {
+      var row = t.row($(this).parents('tr'));
+      var data = row.data();
+      $.ajax({
+            url: "{% url 'jenkins_a-api-url:job-build' %}",
+            type: 'POST',
+            data: {
+              name: data.name,
+              csrfmiddlewaretoken: "{{ csrf_token }}"
+            },
+            success: function (result) {
+                if(result.success){
+                    alert('构建发起成功.');
+                    window.location.href="{% url 'jenkins_a-url:job-building-list' %}";
+                }else{
+                    alert('构建发起失败. 失败内容：' + result.error)
+                }
+            },
+            error: function (err) {
+              alert(toString(err))
+            }
+          });
+    });
+    //删除按钮绑定事件
+    $("#example1 tbody").on('click', 'button.delete', function(){
+        var row = t.row($(this).parents('tr') )//获取按钮所在的行
+        var data = row.data();
+        if(confirm('确定要删除'+"任务: "+ data.name+"id: "+ data.number+' ?')){
+          $.ajax({
+            url: "{% url 'jenkins_a-api-url:job-build-delete' %}",
+            type: 'POST',
+            data: {
+              name: data.name,
+              number: data.number,
+              csrfmiddlewaretoken: "{{ csrf_token }}"
+            },
+            success: function (result) {
+                if(result.success){
+                    alert('删除成功.')
+                    t.reload();
+                }else{
+                    alert('删除失败. 错误内容：' + result.error)
+                }
+            },
+            error: function (err) {
+              alert(toString(err))
+            }
+          })
         }
 
     });
-    // 点击按钮
-    $("#example1 tbody").on('click', 'a.console_log', function(){
-        var row = t.row($(this).parents('tr') ),//获取按钮所在的行
-        data = row.data();
-        output_console_log(data.name, data.number);
-
-    });
-
-    $("#example1 tbody").on('click', 'i.glyphicon', function(){
+    // 日志显示事件
+    {#$("#example1 tbody").on('click', 'i#output_console_event', function(){#}
+    {#    build_faild_output_console_log_event(this, t);#}
+    {##}
+    {#});#}
+    $("#example1 tbody").on('click', 'tr.odd,tr.even', function(){
         build_faild_output_console_log_event(this, t);
 
     });
-
     //table2_demo4_js_end
   });
-
 // 构建失败的日志查看
-function build_faild_output_console_log_event(i_obj, t){
-    var tr = $(i_obj).parents('tr');
-    var row = t.row($(i_obj).parents('tr') ),//获取按钮所在的行
-    data = row.data();
+function build_faild_output_console_log_event(tr_obj, t){
+    var row = t.row(tr_obj);//获取按钮所在的行
+    var data = row.data();
     var parameter = "?name=" + data.name + "&number=" + data.number;
-    var ntr = $(tr).next()
+    var ntr = $(tr_obj).next();
+    var i_obj = $(tr_obj).find('i');
     // 显示
     if($(i_obj).hasClass("glyphicon-chevron-down")){
 
@@ -150,12 +190,12 @@ function build_faild_output_console_log_event(i_obj, t){
                     if (build_console_output) {
                       htm =  "<tr class=\"detail\" style=\"\">\n" +
                                 "<td colspan=\"6\">\n" +
-                                    "<pre >" +
+                                    "<pre>" +
                                         build_console_output +
                                     "</pre>" +
                 "                        </td>\n" +
                 "                    </tr>";
-                      $(tr).after(htm);
+                      $(tr_obj).after(htm);
                     }
                 }
             });
