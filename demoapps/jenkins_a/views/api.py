@@ -39,7 +39,7 @@ class JobBuildDeleteApi(View):
         name, number = request.POST.get('name'), request.POST.get('number')
         server = JenkinsServer()
         try:
-            server.delete_build(name, int(number))
+            server.delete_job_build(name, int(number))
             return JsonResponse({'success': True})
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})

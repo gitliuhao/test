@@ -1,6 +1,7 @@
 import datetime
 
 import jenkins as jenkins
+import requests
 from django.conf import settings
 from django.http import Http404
 
@@ -80,3 +81,9 @@ class JenkinsServer(jenkins.Jenkins):
                     build['name'] = name
                     build_list.append(build)
         return build_list
+
+    def delete_job_build(self, name, number):
+        folder_url, short_name = self._get_job_folder(name)
+        url = self._build_url(jenkins.DELETE_BUILD, locals())
+        req = requests.Request('POST', url)
+        return self.jenkins_request(req)

@@ -113,17 +113,17 @@
         $(function(){
              var li = $('.navi li');
              li.each(function(){
-             $(this).click(function(){
-             if( $(this).hasClass('c-open')){
-                $(this).find('ul').slideUp(400);
-                $(this).removeClass('c-open');
-             }else{
-               $(this).find('ul').slideDown(400);
-               $(this).addClass('c-open');
-               }
-              })
-           });
-        })
+               $(this).click(function(){
+                 if( $(this).hasClass('c-open')){
+                   $(this).find('ul').slideUp(400);
+                   $(this).removeClass('c-open');
+                 }else{
+                   $(this).find('ul').slideDown(400);
+                   $(this).addClass('c-open');
+                 }
+               })
+             });
+        });
 
 $(".has_submenu").each(function(){
     var t = this;
