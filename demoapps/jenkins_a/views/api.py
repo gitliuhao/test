@@ -30,7 +30,8 @@ class JobBuildFaildListApi(View):
     ''' 失败的构建记录列表 '''
     def get(self, request, *args, **kwargs):
         server = JenkinsServer()
-        return HttpResponse(json.dumps(server.get_job_build_faild_list()), content_type="application/json")
+        job_build_faild_list = [build for build in server.get_all_build_iter() if build['result'] == 'FAILURE']
+        return HttpResponse(json.dumps(job_build_faild_list), content_type="application/json")
 
 
 class JobBuildDeleteApi(View):

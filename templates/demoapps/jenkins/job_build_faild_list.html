@@ -77,8 +77,14 @@
           {title: "状态", render: function () {
               return "构建失败";
             }},
-          {title: "时间", data:"detail.time"},
-          {#{data:"start_date"},#}
+          {title: "时间", data:"time"},
+          {title: "上次成功时间", render: function (data, type, row, meta) {
+                if (row.last_successful){
+                  return row.last_successful.time
+                }else{
+                  return '无'
+                }
+            }},
           {#{data:"office"},#}
           {#{data:"extn"},#}
           {
@@ -132,7 +138,7 @@
     });
     //删除按钮绑定事件
     $("#example1 tbody").on('click', 'button.delete', function(){
-        var row = t.row($(this).parents('tr') )//获取按钮所在的行
+        var row = t.row($(this).parents('tr'));//获取按钮所在的行
         var data = row.data();
         if(confirm('确定要删除'+"任务: "+ data.name+"id: "+ data.number+' ?')){
           $.ajax({
