@@ -89,7 +89,7 @@
           {#{data:"extn"},#}
           {
             title: '操作',
-            data:null,
+            orderable:false,
             render : function(data, type, row, meta){
               htm = "<button class=\"btn btn-success job_build\" >" + "构建"+
                     "</button>&nbsp;"+
@@ -178,7 +178,7 @@ function build_faild_output_console_log_event(i_obj, t){
     var row = t.row($(i_obj).parents('tr') ),//获取按钮所在的行
     data = row.data();
     var parameter = "?name=" + data.name + "&number=" + data.number;
-    var ntr = $(tr).next()
+    var ntr = $(tr).next();
     // 显示
     if($(i_obj).hasClass("glyphicon-chevron-down")){
 
@@ -189,10 +189,10 @@ function build_faild_output_console_log_event(i_obj, t){
                 method: "get",
                 url:"{% url 'jenkins_a-url:job-build-console-input-api' %}" + parameter,
                 success: function(data) {
-                    build_console_output = data.build_console_output;
+                    var build_console_output = data.build_console_output;
                     if (build_console_output) {
                       htm =  "<tr class=\"detail\" style=\"\">\n" +
-                                "<td colspan=\"6\">\n" +
+                                "<td colspan=\"7\">\n" +
                                     "<pre>" +
                                         build_console_output +
                                     "</pre>" +
