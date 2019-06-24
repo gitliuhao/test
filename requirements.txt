@@ -20,10 +20,9 @@ httplib2==0.9.1
 uWSGI==2.0.13.1
 
 # 基于django的socket
+
 paramiko==2.4.2
 cryptography==2.4.2
 dwebsocket==0.5.10
-XML2Dict=0.2.2
-jenkins=1.0.2
-
-
+XML2Dict==0.2.2
+python-jenkins==1.0.2
