@@ -24,5 +24,6 @@ paramiko==2.4.2
 cryptography==2.4.2
 dwebsocket==0.5.10
 XML2Dict=0.2.2
+jenkins=1.0.2
 
 
