@@ -17,7 +17,8 @@
     <!--蓝鲸提供的公用样式库 -->
     <link href="https://magicbox.bk.tencent.com/static_api/v3/bk/css/bk.css" rel="stylesheet">
     <link href="https://magicbox.bk.tencent.com/static_api/v3/bk/css/bk_pack.css" rel="stylesheet">
-    "{% block css %}
+
+    {% block css %}
     {% endblock %}
     <style>
         td > pre {width: 95%;line-height: 10px;max-width: 1500px; max-height: 600px}
@@ -33,18 +34,12 @@
                 <div style="overflow:hidden; z-index: inherit;" class="navbar king-horizontal-nav1  f14">
                     <div class="navbar-container">
                         <div class="navbar-header pull-left">
-{#                            <a class="navbar-brand" href="javascript:;">#}
-{#                                <img src="https://magicbox.bk.tencent.com/static_api/v3/bk/images/logo.png" class="logo"> </a>#}
                         </div>
                         <ul class="nav navbar-nav pull-left m0">
                         </ul>
                         <div class="navbar-header pull-right">
                             <ul class="nav">
                                 <li class="user-info">
-{#                                    <a href="javascript:;">#}
-{#                                        <img class="img-rounded" src="https://magicbox.bk.tencent.com/static_api/v3/components/horizontal_nav1/images/avatar.png">#}
-{#                                        <span>admin</span>#}
-{#                                    </a>#}
                                 </li>
                             </ul>
                         </div>
@@ -88,7 +83,7 @@
             <!-- sidebar end -->
             <!-- content start -->
             <div class="king-content-wrap">
-                 <div class="panel-heading"> </div>
+                 <div class="panel-heading"></div>
                 {% block content %}
                 {% endblock %}
             </div>
@@ -96,6 +91,7 @@
         </div>
     </div>
 
+</body>
     <script src="https://magicbox.bk.tencent.com/static_api/v3/assets/js/jquery-1.10.2.min.js"></script>
     <script src="https://magicbox.bk.tencent.com/static_api/v3/assets/bootstrap-3.3.4/js/bootstrap.min.js"></script>
 
@@ -130,9 +126,6 @@ $(".has_submenu").each(function(){
 
 })
     </script>
-
 {% block js %}
 {% endblock %}
-</body>
-
 </html>
