@@ -16,17 +16,16 @@
             </div>
             <!-- /.box-header -->
 {#                  <div class="king-block-header king-gray-light">#}
-                    <div id="select_box">
-                      <select class="select2_box" style="width:300px;">
+{#                </div>#}
+            <div class="box-body">
+                <div id="select_box" style="">
+                    <select class="select2_box" style="width:300px;">
                           {% for  job_name in job_name_list %}
                               <option value="{{ job_name }}">{{ job_name }}</option>
                           {% endfor %}
                     </select>
-                    </div>
-{#                </div>#}
-            <div class="box-body">
-              <table id="example1" class="table table-hover mb0">
-              </table>
+                </div>
+                <table id="example1" class="table table-hover mb0"></table>
             </div>
             <!-- /.box-body -->
           </div>
@@ -69,7 +68,7 @@ var language = {
 };
 $("#example1").dataTable({
   autoWidth: false,
-  searching: true, //关闭搜索
+  searching: false, //关闭搜索
   lengthChange: false, //不允许用户改变表格每页显示的记录数
   pageLength : 10, //每页显示几条数据
   {#lengthMenu: [5, 10, 20], //每页显示选项#}
@@ -167,7 +166,7 @@ $("#example1 tbody").on('click', 'button.delete', function(){
         },
         success: function (result) {
             if(result.success){
-                alert('删除成功.')
+                alert('删除成功.');
                 t.ajax.reload()
             }else{
                 alert('删除失败. 错误内容：' + result.error)
@@ -200,7 +199,8 @@ function build_faild_output_console_log_event(i_obj, t){
     // 显示
     if($(i_obj).hasClass("glyphicon-chevron-down")){
         if(ntr.hasClass('detail')){
-            ntr.attr('style', '')
+            ntr.attr('style', '');
+            $(i_obj).attr('class', 'glyphicon glyphicon-chevron-up')
         }else {
             $.ajax({
                 method: "get",
