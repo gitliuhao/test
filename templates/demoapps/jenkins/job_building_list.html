@@ -39,6 +39,7 @@
 {% block js %}
     <script src="https://magicbox.bk.tencent.com/static_api/v3/assets/datatables-1.10.7/jquery.dataTables.js"></script>
 <script src="https://magicbox.bk.tencent.com/static_api/v3/assets/datatables-1.10.7/dataTables.bootstrap.js"></script>
+<script src="{% static '/demoapps/js/index.js' %}"></script>
 
 <script>
 
@@ -66,13 +67,16 @@
         autoWidth: false,
         lengthChange: true, //不允许用户改变表格每页显示的记录数
         pageLength : 5, //每页显示几条数据
-        lengthMenu: [5, 10, 20], //每页显示选项
+        {#lengthMenu: [5, 10, 20], //每页显示选项#}
         pagingType: 'full_numbers',
         {#ajax : "{% url 'jenkins_a-api-url:job-building-list' %}",#}
         ajax: {
             "url": "{% url 'jenkins_a-api-url:job-building-list' %}",
             "dataSrc": function ( json ) {
-                return json;}
+                return json;},
+            error: function (err) {
+              response_500_alert(err)
+            }
           },
         ordering: true,
         columns : [
@@ -128,7 +132,7 @@ function output_console_log(name, number){
         method: "get",
         url:"{% url 'jenkins_a-url:job-build-console-input-api' %}" + parameter,
         success: function(data) {
-            build_console_output = data.build_console_output;
+            var build_console_output = data.build_console_output;
             document.querySelector('#chat-log').value = build_console_output;
             $('#chat-log').scrollTop($('#chat-log')[0].scrollHeight);
         }

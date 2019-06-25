@@ -46,152 +46,150 @@
 <script src="{% static '/demoapps/js/index.js' %}"></script>
 
 <script>
-
-
-  $(function () {
-    //table2_demo4_js_start
-    //表格(DataTables)-4，综合示例
-    var language = {
-      search: '搜索：',
-      {#lengthMenu: "每页显示 _MENU_ 记录",#}
-      zeroRecords: "没找到相应的数据！",
-      info: "分页 _PAGE_ / _PAGES_",
-      infoEmpty: "暂无数据！",
-      {#infoFiltered: "(从 _MAX_ 条数据中搜索)",#}
-      processing : "正在获取数据，请稍后...",
-      deferRender:true,//当处理大数据时，延迟渲染数据，有效提高Datatables处理能力
-      {#loadingRecords: '正在获取数据，请稍后...',#}
-      loadingRecords: '正在获取数据，请稍后...',
-      paginate: {
-        first: '首页',
-        last: '尾页',
-        previous: '上一页',
-        next: '下一页',
-      }
-    };
-    $("#example1").dataTable({
-      autoWidth: false,
-      searching: false, //关闭搜索
-        lengthChange: false, //不允许用户改变表格每页显示的记录数
-        pageLength : 10, //每页显示几条数据
-        {#lengthMenu: [5, 10, 20], //每页显示选项#}
-        pagingType: 'full_numbers',
-        {#ajax : "{% url 'jenkins_a-api-url:job-building-list' %}",#}
-        ajax: {
-            "url": "{% url 'jenkins_a-api-url:job-build-failed-list' %}",
-            "data": function (t) {
-              var select_val = $("#select_box select").val()
-              return {"job_name": select_val}
-            },
-            "dataSrc": function ( json ) {
-                return json;}
-          },
-        ordering: true,
-        aoColumnDefs: [ { "bSortable": false, "aTargets": [ 4 ] }],
-        columns : [
-          {title: "# id", data:"number"},
-          {title: "任务", data:"name"},
-          {title: "状态", render: function () {
-              return "构建失败";
-            }},
-          {title: "时间", data:"time"},
-          {title: "上次成功时间", render: function (data, type, row, meta) {
-                if (row.last_successful){
-                  return row.last_successful.time
-                }else{
-                  return '无'
-                }
-            }},
-          {#{data:"office"},#}
-          {#{data:"extn"},#}
-          {
-            title: '操作',
-            orderable:false,
-            render : function(data, type, row, meta){
-              htm = "<button class=\"btn btn-success job_build\" >" + "构建"+
-                    "</button>&nbsp;"+
-                    "<button class=\"btn btn-danger delete\">" + "删除" +
-                    "</button>"
-              ;
-              return htm
-
-            }
-          },
-          {
-            orderable:false,
-            render :function () {
-              return "<i class=\"glyphicon glyphicon-chevron-down\" id=\"output_console_event\" style=\"color:silver\"></i>"
-              {#return "<i class=\"glyphicon glyphicon-chevron-up\" style=\"color:silver\"></i>"#}
-            }
-          }
-        ],
-        language:language
-    });
-    // 任务构建
-    var t = $("#example1").DataTable();//获取datatables对象
-
-    $("#example1 tbody").on('click', 'button.job_build', function () {
-      var row = t.row($(this).parents('tr'));
-      var data = row.data();
-      $.ajax({
-            url: "{% url 'jenkins_a-api-url:job-build' %}",
-            type: 'POST',
-            data: {
-              name: data.name,
-              csrfmiddlewaretoken: "{{ csrf_token }}"
-            },
-            success: function (result) {
-                if(result.success){
-                    alert('构建发起成功.');
-                    window.location.href="{% url 'jenkins_a-url:job-building-list' %}";
-                }else{
-                    alert('构建发起失败. 失败内容：' + result.error)
-                }
-            },
-            error: function (err) {
-                    response_500_alert(err)
-                  }
-                });
-    });
-
-    //删除按钮绑定事件
-    $("#example1 tbody").on('click', 'button.delete', function(){
-        var row = t.row($(this).parents('tr'));//获取按钮所在的行
-        var data = row.data();
-        if(confirm('确定要删除'+"任务: "+ data.name+"id: "+ data.number+' ?')){
-          $.ajax({
-            url: "{% url 'jenkins_a-api-url:job-build-delete' %}",
-            type: 'POST',
-            data: {
-              name: data.name,
-              number: data.number,
-              csrfmiddlewaretoken: "{{ csrf_token }}"
-            },
-            success: function (result) {
-                if(result.success){
-                    alert('删除成功.')
-                    t.ajax.reload()
-                }else{
-                    alert('删除失败. 错误内容：' + result.error)
-                }
-            },
-            error: function (err) {
-              alert(toString(err))
-            }
-          })
+$(function () {
+//table2_demo4_js_start
+//表格(DataTables)-4，综合示例
+var language = {
+  search: '搜索：',
+  {#lengthMenu: "每页显示 _MENU_ 记录",#}
+  zeroRecords: "没找到相应的数据！",
+  info: "分页 _PAGE_ / _PAGES_",
+  infoEmpty: "暂无数据！",
+  {#infoFiltered: "(从 _MAX_ 条数据中搜索)",#}
+  processing : "正在获取数据，请稍后...",
+  deferRender:true,//当处理大数据时，延迟渲染数据，有效提高Datatables处理能力
+  {#loadingRecords: '正在获取数据，请稍后...',#}
+  loadingRecords: '正在获取数据，请稍后...',
+  paginate: {
+    first: '首页',
+    last: '尾页',
+    previous: '上一页',
+    next: '下一页',
+  }
+};
+$("#example1").dataTable({
+  autoWidth: false,
+  searching: true, //关闭搜索
+  lengthChange: false, //不允许用户改变表格每页显示的记录数
+  pageLength : 10, //每页显示几条数据
+  {#lengthMenu: [5, 10, 20], //每页显示选项#}
+  pagingType: 'full_numbers',
+  {#ajax : "{% url 'jenkins_a-api-url:job-building-list' %}",#}
+  ajax: {
+    "url": "{% url 'jenkins_a-api-url:job-build-failed-list' %}",
+    "data": function (t) {
+      var select_val = $("#select_box select").val()
+      return {"job_name": select_val}
+    },
+    "dataSrc": function ( json ) {
+      return json;}
+  },
+  ordering: true,
+  aoColumnDefs: [ { "bSortable": false, "aTargets": [ 4 ] }],
+  columns : [
+    {title: "# id", data:"number"},
+    {title: "任务", data:"name"},
+    {title: "状态", render: function () {
+      return "构建失败";
+    }},
+    {title: "时间", data:"time"},
+    {
+      title: "上次成功时间",
+      render: function (data, type, row, meta) {
+        if (row.last_successful){
+          return row.last_successful.time
+        }else{
+          return '无'
         }
+      }},
+      {#{data:"office"},#}
+      {#{data:"extn"},#}
+    {
+      title: '操作',
+      orderable:false,
+      render : function(data, type, row, meta){
+        htm = "<button class=\"btn btn-success job_build\" >" + "构建"+
+            "</button>&nbsp;"+
+            "<button class=\"btn btn-danger delete\">" + "删除" +
+            "</button>";
+        return htm
+      }
+    },
+      {
+        orderable:false,
+        render :function () {
+          return "<i class=\"glyphicon glyphicon-chevron-down\" id=\"output_console_event\" style=\"color:silver\"></i>"
+          {#return "<i class=\"glyphicon glyphicon-chevron-up\" style=\"color:silver\"></i>"#}
+        }
+      }
+    ],
+    language:language
+});
+// 任务构建
+var t = $("#example1").DataTable();//获取datatables对象
 
-    });
-    // 日志显示事件
-    $("#example1 tbody").on('click', 'i#output_console_event', function(){
-        build_faild_output_console_log_event(this, t);
+$("#example1 tbody").on('click', 'button.job_build', function () {
+  var row = t.row($(this).parents('tr'));
+  var data = row.data();
+  $.ajax({
+        url: "{% url 'jenkins_a-api-url:job-build' %}",
+        type: 'POST',
+        data: {
+          name: data.name,
+          csrfmiddlewaretoken: "{{ csrf_token }}"
+        },
+        success: function (result) {
+            if(result.success){
+                alert('构建发起成功.');
+                window.location.href="{% url 'jenkins_a-url:job-building-list' %}";
+            }else{
+                alert('构建发起失败. 失败内容：' + result.error)
+            }
+        },
+        error: function (err) {
+                response_500_alert(err)
+              }
+            });
+});
 
-    });
-    // 选择任务后重新加载数据
-    $("#select_box select").change(function (re) {
-        t.ajax.reload()
-    })
-  });
+//删除按钮绑定事件
+$("#example1 tbody").on('click', 'button.delete', function(){
+    var row = t.row($(this).parents('tr'));//获取按钮所在的行
+    var data = row.data();
+    if(confirm('确定要删除'+"任务: "+ data.name+"id: "+ data.number+' ?')){
+      $.ajax({
+        url: "{% url 'jenkins_a-api-url:job-build-delete' %}",
+        type: 'POST',
+        data: {
+          name: data.name,
+          number: data.number,
+          csrfmiddlewaretoken: "{{ csrf_token }}"
+        },
+        success: function (result) {
+            if(result.success){
+                alert('删除成功.')
+                t.ajax.reload()
+            }else{
+                alert('删除失败. 错误内容：' + result.error)
+            }
+        },
+        error: function (err) {
+          alert(toString(err))
+        }
+      })
+    }
+
+});
+// 日志显示事件
+$("#example1 tbody").on('click', 'i#output_console_event', function(){
+    build_faild_output_console_log_event(this, t);
+
+});
+// 选择任务后重新加载数据
+$("#select_box select").change(function (re) {
+    t.ajax.reload()
+})
+});
 // 构建失败的日志查看
 function build_faild_output_console_log_event(i_obj, t){
     var tr = $(i_obj).parents('tr');
