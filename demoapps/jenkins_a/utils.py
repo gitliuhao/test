@@ -123,6 +123,10 @@ class JenkinsServer(jenkins.Jenkins):
         except FileNotFoundError:
             pass
 
+    def get_job_name_list(self):
+        job_name_list = os.listdir(self.jobs_path)
+        return job_name_list
+
     def get_job_build_info(self, name, number, field_names=None):
         if field_names is None:
             field_names = ['queueId', 'timestamp', 'startTime', 'result']
@@ -139,24 +143,35 @@ class JenkinsServer(jenkins.Jenkins):
         build_data['time'] = stamp_to_datetime(build['timestamp'], unit='ms', format="%Y-%m-%d %H:%M")
         return build_data
 
-    def get_all_build_iter(self):
-        ''' 返回生成器 每个值为构建历史 '''
-        job_name_list = os.listdir(self.jobs_path)
-        for job_name in job_name_list:
-            job_builds_path = os.path.join(os.path.join(self.jobs_path, job_name), 'builds')
-            try:
-                build_number_list = os.listdir(job_builds_path)
-            except FileNotFoundError:
-                continue
-            for build_number in build_number_list:
-                try:
-                    build_number = int(build_number)
-                except ValueError:
-                    continue
-                build = self.get_job_build_info(job_name, build_number)
-                if build:
-                    build['last_successful'] = self.last_successful_build(job_name)
+    def get_all_build_iter(self, name=None):
+        ''' 返回生成器 每个值为构建历史
+            @name: 任务名称
+        '''
+        if name:
+            for build in self.get_job_builds_iter(name):
+                yield build
+        else:
+            job_name_list = self.get_job_name_list()
+            for job_name in job_name_list:
+                for build in self.get_job_builds_iter(job_name):
                     yield build
+
+    def get_job_builds_iter(self, name):
+        ''' 查看一个任务的所有构建记录。返回迭代器'''
+        job_builds_path = os.path.join(os.path.join(self.jobs_path, name), 'builds')
+        try:
+            build_number_list = os.listdir(job_builds_path)
+        except FileNotFoundError:
+            build_number_list = []
+        for build_number in build_number_list:
+            try:
+                build_number = int(build_number)
+            except ValueError:
+                continue
+            build = self.get_job_build_info(name, build_number)
+            if build:
+                build['last_successful'] = self.last_successful_build(name)
+                yield build
 
     def last_successful_build(self, name):
         ''' 获取任务上次成功的构建信息 '''
