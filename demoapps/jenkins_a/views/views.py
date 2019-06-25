@@ -25,7 +25,7 @@ class JobBuildFaildList(View):
 
 class JenkinsView(View):
     def get(self, request, *args, **kwargs):
-        return HttpResponseRedirect(reverse("jenkins-url:job-list"))
+        return HttpResponseRedirect(reverse("jenkins_a-url:job-build-failed-list"))
 
 
 class JobsView(View):
