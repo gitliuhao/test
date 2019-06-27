@@ -2,4 +2,4 @@
 test*.*
 *.pyc
 __pycache__
-media/logs/*.*
+media/logs/*
