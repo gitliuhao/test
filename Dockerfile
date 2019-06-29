@@ -1,29 +1,23 @@
-# Use an official Python runtime as a parent image
-FROM centos:default
-
-
-# Set the working directory to /app
-WORKDIR /test
-
-# Copy the current directory contents into the container at /app
-COPY . /test
+FROM centos:7
 #
+RUN yum -y  update
+RUN yum -y  install gcc automake autoconf libtool make java-1.8.0-openjdk wget gcc-c++ zlib* netstat \
+    openssh-server openssh-clients passwd chkconfig lsof
+# Install any needed packages specified in requirements.txt
+RUN echo "root:root"|chpasswd \
+    && sed -i "s/#PubkeyAuthentication yes/PubkeyAuthentication yes/g"  /etc/ssh/sshd_config \
+    && sed -i "s/#PermitRootLogin yes/PermitRootLogin yes/g"  /etc/ssh/sshd_config
 
-RUN wget http://mirrors.jenkins.io/war-stable/latest/jenkins.war
 
 
-RUN pip3 install -r requirements.txt -i https://pypi.douban.com/simple
+RUN wget https://www.python.org/ftp/python/3.6.8/Python-3.6.8.tar.xz \
+    && mkdir -p /usr/local/python3 \
+    && tar xJf Python-3.6.8.tar.xz \
+    && Python-3.6.8/configure --with-ssl \
+    && make && make install \
+    && ln -s /usr/local/python3/bin/python3 /usr/bin/python3 && ln -s /usr/local/python3/bin/pip3 /usr/bin/pip3
 
-# Make port 80 available to the world outside this container
-EXPOSE 8001
 
-# Define environment variable
-ENV NAME World
-
-# Run app.py when the container launches
-#CMD ["python3", "ry"]
-RUN cd /test
-#RUN python3 manage.py runserver 0.0.0.0:8001
-
-CMD ["java" ,"-jar", "jenkins.war", "--httpPort=8080"]
-CMD ["python3", "manage.py", "runserver", "0.0.0.0:8001"]
+#
+CMD ["/usr/sbin/init"]
+#CMD ["mkdir", "aabb"]
