@@ -26,10 +26,10 @@ RUN mkdir ~/.pip && \
 
 # 系统编码设置utf8
 # RUN export LC_ALL=en_US.utf8 && export LANG=en_US.utf8
-RUN sed -i '$a export LANG=en_US.utf8' /etc/profile
-RUN locale
+RUN sed -i '$a export LANG=en_US.utf8' /etc/profile && source /etc/profile
+
+# 安装python环境
 COPY requirements.txt /root/requirements.txt
-RUN locale
 RUN pip3 install -r /root/requirements.txt
 
 #下载Jenkins
