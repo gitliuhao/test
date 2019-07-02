@@ -1,31 +1,37 @@
 FROM centos:7
-#
 RUN yum -y  update
-RUN yum -y  install gcc automake autoconf libtool make java-1.8.0-openjdk wget gcc-c++ zlib* netstat \
-    openssh-server openssh-clients passwd chkconfig lsof
+RUN yum -y  install gcc automake autoconf libtool make java-1.8.0-openjdk wget gcc-c++ zlib* \
+    openssh-server openssh-clients passwd chkconfig lsof vim
 # Install any needed packages specified in requirements.txt
 RUN echo "root:root"|chpasswd \
     && sed -i "s/#PubkeyAuthentication yes/PubkeyAuthentication yes/g"  /etc/ssh/sshd_config \
     && sed -i "s/#PermitRootLogin yes/PermitRootLogin yes/g"  /etc/ssh/sshd_config
 
-
 # python环境依赖包
 RUN yum -y install openssl-devel bzip2-devel expat-devel gdbm-devel readline-devel sqlite-devel
 
+# 安装python
 RUN wget https://www.python.org/ftp/python/3.6.8/Python-3.6.8.tar.xz \
-    && mkdir -p /usr/local/python3 \
     && tar xJf Python-3.6.8.tar.xz \
-    && Python-3.6.8/configure --with-ssl \
+    && /Python-3.6.8/configure --prefix=/usr/local/python3 \
     && make && make install \
     && ln -s /usr/local/python3/bin/python3 /usr/bin/python3 && ln -s /usr/local/python3/bin/pip3 /usr/bin/pip3
 
 # 换源
-RUN mkdir ~/.pip \
-    && echo "[global]" >>  ~/.pip/pip.conf \
-    && echo "timeout = 6000" >>  ~/.pip/pip.conf \
-    && echo "index-url = http://mirrors.aliyun.com/pypi/simple/" >>  ~/.pip/pip.conf \
-    && echo "trusted-host = pypi.tuna.tsinghua.edu.cn" >>  ~/.pip/pip.conf
+RUN echo -e "[global]"\
+            "\ntimeout = 6000"\
+            "\nindex-url = https://mirrors.aliyun.com/pypi/simple/" \
+            "\ntrusted-host = pypi.tuna.tsinghua.edu.cn" >  ~/.pip/pip.conf
 
+# 系统编码设置utf8
+# RUN export LC_ALL=en_US.utf8 && export LANG=en_US.utf8
+RUN sed -i '$a export LANG=en_US.utf8' /etc/profile
 
+RUN pip3 install -r ./requirements.txt
+
+#下载Jenkins
+RUN wget http://mirrors.jenkins.io/war-stable/latest/jenkins.war -P ~
+
+#
 CMD ["/usr/sbin/init"]
 #CMD ["mkdir", "aabb"]
