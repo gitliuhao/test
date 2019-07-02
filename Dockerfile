@@ -29,7 +29,7 @@ RUN mkdir ~/.pip && \
 RUN sed -i '$a export LANG=en_US.utf8' /etc/profile
 
 COPY requirements.txt /root/requirements.txt
-RUN pip3 install -r requirements.txt
+RUN pip3 install -r /root/requirements.txt
 
 #下载Jenkins
 RUN wget http://mirrors.jenkins.io/war-stable/latest/jenkins.war -P ~
