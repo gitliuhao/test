@@ -18,7 +18,8 @@ RUN wget https://www.python.org/ftp/python/3.6.8/Python-3.6.8.tar.xz \
     && ln -s /usr/local/python3/bin/python3 /usr/bin/python3 && ln -s /usr/local/python3/bin/pip3 /usr/bin/pip3
 
 # 换源
-RUN echo -e "[global]"\
+RUN mkdir ~/.pip && \
+    echo -e "[global]" \
             "\ntimeout = 6000"\
             "\nindex-url = https://mirrors.aliyun.com/pypi/simple/" \
             "\ntrusted-host = pypi.tuna.tsinghua.edu.cn" >  ~/.pip/pip.conf
