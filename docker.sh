@@ -10,4 +10,4 @@ docker run --privileged --name=test1 --restart=always -d \
     -p 80:80 \
     -p 8001:8001 \
     -p 8080:8080 \
-    registry.cn-hangzhou.aliyuncs.com/lch_docker_k/aaaaaaaa:1111
+    registry.cn-hangzhou.aliyuncs.com/lch_docker_k/test:latest
