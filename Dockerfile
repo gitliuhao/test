@@ -28,6 +28,7 @@ RUN mkdir ~/.pip && \
 # RUN export LC_ALL=en_US.utf8 && export LANG=en_US.utf8
 RUN sed -i '$a export LANG=en_US.utf8' /etc/profile && source /etc/profile
 
+RUN locale
 # 安装python环境
 COPY requirements.txt /root/requirements.txt
 RUN pip3 install -r /root/requirements.txt
