@@ -20,7 +20,7 @@ RUN wget https://www.python.org/ftp/python/3.6.8/Python-3.6.8.tar.xz \
 # 换源
 RUN mkdir ~/.pip && \
     echo -e "[global]" \
-            "\ntimeout = 6000"\
+            "\ntimeout = 6000" \
             "\nindex-url = https://mirrors.aliyun.com/pypi/simple/" \
             "\ntrusted-host = pypi.tuna.tsinghua.edu.cn" >  ~/.pip/pip.conf
 
