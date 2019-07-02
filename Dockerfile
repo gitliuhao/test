@@ -25,7 +25,7 @@ RUN mkdir ~/.pip && \
             "\ntrusted-host = pypi.tuna.tsinghua.edu.cn" >  ~/.pip/pip.conf
 
 # 系统编码设置utf8
-# RUN export LC_ALL=en_US.utf8 && export LANG=en_US.utf8
+RUN export LC_ALL=en_US.utf8 && export LANG=en_US.utf8
 RUN sed -i '$a export LANG=en_US.utf8' /etc/profile && source /etc/profile
 
 RUN locale
