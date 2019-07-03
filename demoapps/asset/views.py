@@ -72,11 +72,15 @@ def tailf(request):
 
 def local_tailf(request):
     root_path = "/data/xls/runtime/"
+    data = {'root_path': root_path}
     # 倒叙取值
-    search_path_list = map(lambda x: x[-1][len(root_path):],
-        sorted(traverse(root_path), key=lambda x: x[0], reverse=True))
-    return render(request, 'demoapps/asset/local_tailf.html', {'root_path': root_path,
-                                                      'search_path_list': search_path_list})
+    try:
+        search_path_list = map(lambda x: x[-1][len(root_path):],
+            sorted(traverse(root_path), key=lambda x: x[0], reverse=True))
+        data['search_path_list'] = search_path_list
+    except FileNotFoundError as e:
+        data['errors'] = str(e)
+    return render(request, 'demoapps/asset/local_tailf.html', data)
 
 
 def local_file_list(request):
