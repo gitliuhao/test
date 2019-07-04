@@ -3,7 +3,7 @@ FROM centos:7
 RUN yum -y install epel-release && yum clean all && yum makecache
 #RUN yum -y  update
 RUN yum -y  install gcc automake autoconf libtool make java-1.8.0-openjdk wget gcc-c++ zlib* \
-    openssh-server openssh-clients passwd chkconfig lsof vim
+    openssh-server openssh-clients passwd chkconfig lsof vim iproute
 # Install any needed packages specified in requirements.txt
 RUN echo "root:root"|chpasswd \
     && sed -i "s/#PubkeyAuthentication yes/PubkeyAuthentication yes/g"  /etc/ssh/sshd_config \
