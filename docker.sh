@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 docker-machine ssh default "sudo mkdir /sys/fs/cgroup/systemd"
 docker-machine ssh default "sudo mount -t cgroup -o none,name=systemd cgroup /sys/fs/cgroup/systemd"
-workpace=/d/spacework
+workpace=/d/HashiCorp
 
 docker run --privileged --name=test1 --restart=always -d \
     -v $workpace:$workpace \

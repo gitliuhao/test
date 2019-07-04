@@ -33,12 +33,12 @@ def bytes_dict_decode(bytes_dict):
 
 class JenkinsServer(jenkins.Jenkins):
     def __init__(self, url=None, username=None, password=None, timeout=None, jobs_path=None):
+        jconf = settings.JENKINSCONF
         self._xml2d = None
         self.jobs_path = jobs_path
         if not self.jobs_path:
-            self.jobs_path = "/root/.jenkins/jobs/"
+            self.jobs_path = jconf['config_path']
         if not url or not username or not password:
-            jconf = settings.JENKINSCONF
             url, username, password = jconf['url'], jconf['username'], jconf['password']
         super().__init__(url, username=username, password=password)
 
