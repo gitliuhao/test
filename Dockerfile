@@ -17,12 +17,16 @@ RUN wget https://www.python.org/ftp/python/3.6.8/Python-3.6.8.tar.xz \
     && make && make install \
     && ln -s /usr/local/python3/bin/python3 /usr/bin/python3 && ln -s /usr/local/python3/bin/pip3 /usr/bin/pip3
 
-# 换源
+# pip换源
 RUN mkdir ~/.pip && \
     echo -e "[global]" \
             "\ntimeout = 6000" \
             "\nindex-url = https://mirrors.aliyun.com/pypi/simple/" \
             "\ntrusted-host = pypi.tuna.tsinghua.edu.cn" >  ~/.pip/pip.conf
+
+# yum 换源
+RUN yum -y install epel-release && yum clean all && yum makecache
+
 
 # 系统编码设置utf8
 
