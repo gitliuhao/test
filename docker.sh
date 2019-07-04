@@ -18,3 +18,9 @@ docker run --name=jenkins --restart=always -d \
   -p 9090:8080 \
   -v $workpace/var/jenkins_home:/var/jenkins_home \
   jenkins/jenkins
+
+docker run --privileged --name=bluepaas --restart=always -d \
+  -u root \
+  -p 2001:22 \
+  -v $workpace:$workpace \
+  registry.cn-hangzhou.aliyuncs.com/lch_docker_k/test:latest
