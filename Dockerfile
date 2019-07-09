@@ -10,7 +10,7 @@ RUN echo "root:root"|chpasswd \
     && sed -i "s/#PermitRootLogin yes/PermitRootLogin yes/g"  /etc/ssh/sshd_config
 
 # python环境依赖包
-RUN yum -y install openssl-devel bzip2-devel expat-devel gdbm-devel readline-devel sqlite-devel
+RUN pycrypto
 
 # 安装python
 RUN wget https://www.python.org/ftp/python/3.6.8/Python-3.6.8.tar.xz \
@@ -24,7 +24,7 @@ RUN mkdir ~/.pip && \
     echo -e "[global]" \
             "\ntimeout = 6000" \
             "\nindex-url = https://mirrors.aliyun.com/pypi/simple/" \
-            "\ntrusted-host = pypi.tuna.tsinghua.edu.cn" >  ~/.pip/pip.conf
+            "\ntrusted-host = pypi.tuna.tsinghua.edu.cn" > ~/.pip/pip.conf
 
 
 # 系统编码设置utf8
