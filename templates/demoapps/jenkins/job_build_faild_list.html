@@ -25,6 +25,9 @@
                           {% endfor %}
                     </select>
                 </div>
+                {% if errors %}
+                <font style="color: red">{{ errors }}</font>
+                {% endif %}
                 <table id="example1" class="table table-hover mb0"></table>
             </div>
             <!-- /.box-body -->
