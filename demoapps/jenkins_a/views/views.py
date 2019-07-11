@@ -21,7 +21,7 @@ class JobBuildingListView(View):
 class JobBuildFaildList(View):
     def get(self, request, *args, **kwargs):
         clien  = get_client_by_request(request)
-        res = CollectionsBkLogin(clien).get_all_user()
+        res = CollectionsBkLogin(clien).get_all_user(bk_app_code="o39", bk_app_secret="66e40bfc-98b1-45b2-a2e4-eb11adde11da")
         data = {"res": res}
         try:
             data['job_name_list'] = JenkinsServer().get_job_name_list()

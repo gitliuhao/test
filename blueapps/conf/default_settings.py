@@ -39,7 +39,7 @@ MIDDLEWARE = (
     'whitenoise.middleware.WhiteNoiseMiddleware',
     # Auth middleware
     'blueapps.account.middlewares.WeixinLoginRequiredMiddleware',
-    'blueapps.account.middlewares.LoginRequiredMiddleware',
+    # 'blueapps.account.middlewares.LoginRequiredMiddleware',
     # exception middleware
     'blueapps.core.exceptions.middleware.AppExceptionMiddleware'
 )
