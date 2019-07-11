@@ -24,7 +24,7 @@ sys.path.insert(0, os.path.join(BASE_DIR, "demoapps"))
 
 
 JENKINSCONF = {
-    'url': 'http://172.17.0.3:8080',
+    'url': 'http://172.17.0.4:8080',
     "username": 'jenkins',
     "password": 'jenkins',
     "config_path": "/d/HashiCorp/var/jenkins_home/jobs"

@@ -11,7 +11,9 @@ class JobBuildingListApi(View):
     ''' 正在运行的任务构建列表'''
     def get(self, request, *args, **kwargs):
         server = JenkinsServer()
-        return HttpResponse(json.dumps(server.get_job_building_list()), content_type="application/json")
+        job_building_list = json.dumps(server.get_job_building_list())
+
+        return HttpResponse(job_building_list, content_type="application/json")
 
 
 class JobBuildingStopApi(View):

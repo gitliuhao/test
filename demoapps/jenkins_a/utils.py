@@ -1,6 +1,7 @@
 import datetime
 import os
 import sys
+from urllib import parse
 
 import jenkins as jenkins
 import requests
@@ -85,7 +86,7 @@ class JenkinsServer(jenkins.Jenkins):
     def get_job_building_list(self):
         builds = self.get_running_builds()
         for build in builds:
-            name = build['name']
+            name = parse.unquote(build['name'])
             build_info = self.get_build_info(name, build['number'])
             build_info['time'] = stamp_to_datetime(build_info['timestamp'], unit='ms', format="%Y-%m-%d %H:%M")
             build['detail'] = build_info
