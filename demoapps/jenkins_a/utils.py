@@ -87,6 +87,7 @@ class JenkinsServer(jenkins.Jenkins):
         builds = self.get_running_builds()
         for build in builds:
             name = parse.unquote(build['name'])
+            build['name'] = name
             build_info = self.get_build_info(name, build['number'])
             build_info['time'] = stamp_to_datetime(build_info['timestamp'], unit='ms', format="%Y-%m-%d %H:%M")
             build['detail'] = build_info
@@ -126,6 +127,7 @@ class JenkinsServer(jenkins.Jenkins):
 
     def get_job_name_list(self):
         job_name_list = os.listdir(self.jobs_path)
+        job_name_list = [job_name.encode('utf-8', errors='surrogateescape').decode('utf-8') for job_name in job_name_list]
         return job_name_list
 
     def get_job_build_info(self, name, number, field_names=None):
