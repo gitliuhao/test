@@ -30,6 +30,7 @@ docker run --privileged --name=jenkins_1 --restart=always -d \
     -v $workpace:$workpace \
     registry.cn-hangzhou.aliyuncs.com/lch_docker_k/test:latest
 
+
 docker run --privileged --name=jenkins_2 --restart=always -d \
     --network=mynet --ip 10.10.10.2 \
     -u root \
@@ -45,3 +46,7 @@ docker run --privileged --name=jenkins_3 --restart=always -d \
     -p 8083:8080 \
     -v $workpace:$workpace \
     registry.cn-hangzhou.aliyuncs.com/lch_docker_k/test:latest
+
+docker-machine ssh default "docker exec -itd jenkins_1 java -jar /root/jenkins.war"
+docker-machine ssh default "docker exec -itd jenkins_2 java -jar /root/jenkins.war"
+docker-machine ssh default "docker exec -itd jenkins_3 java -jar /root/jenkins.war"
