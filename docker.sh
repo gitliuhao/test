@@ -27,7 +27,7 @@ docker run --privileged --name=jenkins_1 --restart=always -d \
     -u root \
     -p 2001:22 \
     -p 8081:8080 \
-    -v $workpace:$workpace \
+    -v $workpace/root/.jenkins_1/:/root/.jenkins/ \
     registry.cn-hangzhou.aliyuncs.com/lch_docker_k/test:latest
 
 
@@ -36,7 +36,7 @@ docker run --privileged --name=jenkins_2 --restart=always -d \
     -u root \
     -p 2002:22 \
     -p 8082:8080 \
-    -v $workpace:$workpace \
+    -v $workpace/root/.jenkins_2/:/root/.jenkins/ \
     registry.cn-hangzhou.aliyuncs.com/lch_docker_k/test:latest
 
 docker run --privileged --name=jenkins_3 --restart=always -d \
@@ -44,9 +44,9 @@ docker run --privileged --name=jenkins_3 --restart=always -d \
     -u root \
     -p 2003:22 \
     -p 8083:8080 \
-    -v $workpace:$workpace \
+    -v $workpace/root/.jenkins_3/:/root/.jenkins/ \
     registry.cn-hangzhou.aliyuncs.com/lch_docker_k/test:latest
 
-docker-machine ssh default "docker exec -itd jenkins_1 java -jar /root/jenkins.war"
-docker-machine ssh default "docker exec -itd jenkins_2 java -jar /root/jenkins.war"
-docker-machine ssh default "docker exec -itd jenkins_3 java -jar /root/jenkins.war"
+docker-machine ssh default "docker exec -d jenkins_1 java -jar /root/jenkins.war"
+docker-machine ssh default "docker exec -d jenkins_2 java -jar /root/jenkins.war"
+docker-machine ssh default "docker exec -d jenkins_3 java -jar /root/jenkins.war"
