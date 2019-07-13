@@ -11,7 +11,7 @@ RUN echo "root:root"|chpasswd \
     && ssh-keygen -t RSA -N '' -f ~/.ssh/id_rsa
 
 # python环境依赖包
-RUN pycrypto
+RUN yum -y install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gdbm-devel db4-devel libpcap-devel xz-devel libffi-devel
 
 # 安装python
 RUN wget https://www.python.org/ftp/python/3.6.8/Python-3.6.8.tar.xz \
