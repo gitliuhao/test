@@ -47,6 +47,11 @@ docker run --privileged --name=jenkins_3 --restart=always -d \
     -v $workpace/root/.jenkins_3/:/root/.jenkins/ \
     registry.cn-hangzhou.aliyuncs.com/lch_docker_k/test:latest
 
+
+docker-machine ssh default "sudo rm -rf /root/.ssh/known_hosts"
 docker-machine ssh default "docker exec -d jenkins_1 java -jar /root/jenkins.war"
+docker-machine ssh default "docker exec -d jenkins_1 \cp -r  ~/.ssh/id_rsa ~/.jenkins/"
 docker-machine ssh default "docker exec -d jenkins_2 java -jar /root/jenkins.war"
+docker-machine ssh default "docker exec -d jenkins_2 \cp -r  ~/.ssh/id_rsa ~/.jenkins/"
 docker-machine ssh default "docker exec -d jenkins_3 java -jar /root/jenkins.war"
+docker-machine ssh default "docker exec -d jenkins_3 \cp -r  ~/.ssh/id_rsa ~/.jenkins/"

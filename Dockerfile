@@ -8,7 +8,8 @@ RUN yum -y  install gcc automake autoconf libtool make java-1.8.0-openjdk wget g
 RUN echo "root:root"|chpasswd \
     && sed -i "s/#PubkeyAuthentication yes/PubkeyAuthentication yes/g"  /etc/ssh/sshd_config \
     && sed -i "s/#PermitRootLogin yes/PermitRootLogin yes/g"  /etc/ssh/sshd_config \
-    && ssh-keygen -t RSA -N '' -f ~/.ssh/id_rsa
+    && ssh-keygen -t RSA -N '' -f ~/.ssh/id_rsa \
+    && cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 
 # python环境依赖包
 RUN yum -y install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gdbm-devel db4-devel libpcap-devel xz-devel libffi-devel
