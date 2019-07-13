@@ -4,7 +4,7 @@ docker-machine ssh default "sudo mount -t cgroup -o none,name=systemd cgroup /sy
 docker-machine ssh default "docker network create --driver bridge --subnet=10.10.10.0/24 --gateway=10.10.10.1 mynet"
 
 workpace=/d/HashiCorp
-
+db_name=o39
 # 开发环境容器启动
 docker run --privileged --name=test1 --restart=always -d \
     --network=mynet --ip 10.10.10.10 \
@@ -65,9 +65,15 @@ docker run --privileged --name=jenkins_3 --restart=always -d \
     -v $workpace/root/.jenkins_3/:/root/.jenkins/ \
     registry.cn-hangzhou.aliyuncs.com/lch_docker_k/test:latest
 
+#mysql允许远程连接
+docker-machine ssh default \
+    "docker exec -d mymysql " \
+    "mysql -uroot -p123456 -e\"" \
+    "CREATE DATABASE $db_name CHARACTER SET utf8 COLLATE utf8_general_ci;" \
+    "ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '123456';" \
+    "FLUSH PRIVILEGES;\""
 
-
-
+# 启动三个jenkins服务
 docker-machine ssh default "sudo rm -rf /root/.ssh/known_hosts"
 docker-machine ssh default "docker exec -d jenkins_1 java -jar /root/jenkins.war"
 docker-machine ssh default "docker exec -d jenkins_1 \cp -r  ~/.ssh/id_rsa ~/.jenkins/"
