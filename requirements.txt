@@ -5,7 +5,7 @@
 
 # blueapps requirement
 Django==1.11.2
-PyMySQL==0.6.7
+PyMySQL==0.8.0
 MarkupSafe==1.0
 Mako==1.0.6
 requests==2.18.1
