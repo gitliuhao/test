@@ -5,6 +5,7 @@ docker-machine ssh default "docker network create --driver bridge --subnet=10.10
 
 workpace=/d/HashiCorp
 
+# 开发环境容器启动
 docker run --privileged --name=test1 --restart=always -d \
     --network=mynet --ip 10.10.10.10 \
     -v $workpace:$workpace \
@@ -16,12 +17,29 @@ docker run --privileged --name=test1 --restart=always -d \
     -p 8080:8080 \
     registry.cn-hangzhou.aliyuncs.com/lch_docker_k/test:latest
 
+# mysql数据库容器启动
+docker run --privileged --name=mymysql --restart=always -d \
+    -p 3306:3306 \
+    --network=mynet --ip 10.10.10.24 \
+    -v $workpace/mymysql/conf:/etc/mysql/conf.d \
+    -v $workpace/mymysql/logs:/logs \
+    -e MYSQL_ROOT_PASSWORD=123456 \
+    mysql:latest
+
+#docker run --privileged --name=mymysql --restart=always -it \
+#    -p 3306:3306 \
+#    -u root \
+#    --network=mynet --ip 10.10.10.24 \
+#    -e MYSQL_ROOT_PASSWORD=123456 \
+#    mysql:5.6
+
 #docker run --name=jenkins --restart=always -d \
 #  -u root \
 #  -p 9090:8080 \
 #  -v $workpace/var/jenkins_home:/var/jenkins_home \
 #  jenkins/jenkins
 
+# jenkins容器启动
 docker run --privileged --name=jenkins_1 --restart=always -d \
     --network=mynet --ip 10.10.10.1 \
     -u root \
@@ -46,6 +64,8 @@ docker run --privileged --name=jenkins_3 --restart=always -d \
     -p 8083:8080 \
     -v $workpace/root/.jenkins_3/:/root/.jenkins/ \
     registry.cn-hangzhou.aliyuncs.com/lch_docker_k/test:latest
+
+
 
 
 docker-machine ssh default "sudo rm -rf /root/.ssh/known_hosts"

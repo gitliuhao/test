@@ -123,16 +123,16 @@ DEBUG = True
 # USE FOLLOWING SQL TO CREATE THE DATABASE NAMED APP_CODE
 # SQL: CREATE DATABASE `openpaas_test_v2` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; # noqa: E501
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': APP_CODE,
-#         'USER': 'root',
-#         'PASSWORD': '',
-#         'HOST': 'localhost',
-#         'PORT': '3306',
-#     },
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': APP_CODE,
+        'USER': 'root',
+        'PASSWORD': '123456',
+        'HOST': '10.10.10.24',
+        'PORT': '3306',
+    },
+}
 
 
 # 多人开发时，无法共享的本地配置可以放到新建的 local_settings.py 文件中
