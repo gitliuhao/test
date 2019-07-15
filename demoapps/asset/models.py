@@ -15,3 +15,4 @@ class Asset(models.Model):
 
     class Meta:
         verbose_name = "主机"
+        verbose_name_plural = "主机列表"

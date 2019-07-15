@@ -13,7 +13,8 @@ from blueapps.utils import client
 
 logger = logging.getLogger('component')
 
-ROLE_TYPE_ADMIN = '1'
+# ROLE_TYPE_ADMIN = '1'
+ROLE_TYPE_ADMIN = '2'
 
 
 class TokenBackend(ModelBackend):
