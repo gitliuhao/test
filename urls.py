@@ -29,6 +29,6 @@ urlpatterns = [
     url(r'^mako/', include('mako_application.urls')),
     url(r'^asset/', include('asset.urls', namespace='asset-url')),
     url(r'^', include('jenkins_a.urls.urls', namespace='jenkins_a-url')),
-    url(r'^jenkins/api', include('jenkins_a.urls.api_urls', namespace='jenkins_a-api-url')),
+    url(r'^jenkins/api/', include('jenkins_a.urls.api_urls', namespace='jenkins_a-api-url')),
     url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]

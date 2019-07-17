@@ -20,10 +20,15 @@ class JenkinsConfig(models.Model):
         return "%s" % self.url
 
     def config_to_dict(self):
+        asset = self.asset
         return {
             'username': self.username,
-            'host': self.host,
-            'key_filename': self.ssh_key_url(),
+            'password': self.password,
             'config_path': self.config_path,
-            'url': self.url
+            'url': self.url,
+            'asset': {
+                'key_filename': asset.ssh_key_url(),
+                'host': asset.host,
+                'username': asset.username,
+            }
         }

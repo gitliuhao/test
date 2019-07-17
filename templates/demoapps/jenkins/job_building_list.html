@@ -17,7 +17,7 @@
             <!-- /.box-header -->
 
             <div class="box-body">
-                <select class="form-control" name="asset_id" id="_asset">
+                <select class="form-control" name="jk_id" id="_jk_conf">
                 {% for object in objects %}
                     <option value="{{ object.pk }}">{{ object }}</option>
                 {% endfor %}
@@ -49,15 +49,21 @@
 
 <script>
 var url = "{% url 'jenkins_a-api-url:job-building-list' %}";
+var jk_id = $("#_jk_conf").val();
+var param_data = {'jk_id': jk_id}
 $(function () {
-  var asset_id = $("#_asset").val();
-  console.log(asset_id)
-  table_render(url, asset_id)
-
+  table_render(url, jk_id);
+　$('#_jk_conf').change(function(){
+    var jk_id = $(this).val();
+    var param_data = {'jk_id': jk_id}
+    console.log(window.t)
+    {#window.t.ajax.data={'jk_id': jk_id}#}
+    window.t.ajax.reload()
+    })
 });
 
-function table_render(url, asset_id) {
-  if(! asset_id){
+function table_render(url) {
+  if(! jk_id){
     return false
   }
   var language = {
@@ -86,7 +92,7 @@ function table_render(url, asset_id) {
         {#ajax : "{% url 'jenkins_a-api-url:job-building-list' %}",#}
         ajax: {
             "url": url,
-            param: {'asset_id': asset_id},
+            data: param_data,
             "dataSrc": function ( json ) {
                 return json;},
             error: function (err) {
@@ -120,6 +126,7 @@ function table_render(url, asset_id) {
         language:language
     });
   var t = $("#example1").DataTable();//获取datatables对象
+  window.t = t;
     //停止按钮绑定事件
   $("#example1 tbody").on('click', 'a.stop', function(){
         var row = t.row($(this).parents('tr') ),//获取按钮所在的行
@@ -149,7 +156,7 @@ function output_console_log(name, number){
             $('#chat-log').scrollTop($('#chat-log')[0].scrollHeight);
         }
     });
-    var s = setInterval(function(){ reload_console_log(name, number); }, 1000);
+    window.s = setInterval(function(){ reload_console_log(name, number); }, 1000);
 }
 
 function reload_console_log(name, number){
@@ -166,6 +173,9 @@ function reload_console_log(name, number){
                 if (data.building==false){
                     clearTimeout(s);
                 }
+            },
+            error: function (err) {
+                window.clearInterval(window.s);
             }
         })
 }

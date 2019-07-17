@@ -2,15 +2,18 @@ import json
 
 import jenkins
 from django.http import JsonResponse, HttpResponse
+from django.shortcuts import get_object_or_404
 from django.views import View
 
+from jenkins_a.models import JenkinsConfig
 from jenkins_a.utils import JenkinsServer
 
 
 class JobBuildingListApi(View):
     ''' 正在运行的任务构建列表'''
     def get(self, request, *args, **kwargs):
-        server = JenkinsServer()
+        jk = get_object_or_404(JenkinsConfig, pk=request.GET.get('jk_id', 0))
+        server = JenkinsServer(**jk.config_to_dict())
         job_building_list = json.dumps(server.get_job_building_list())
 
         return HttpResponse(job_building_list, content_type="application/json")

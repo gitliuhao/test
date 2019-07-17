@@ -33,14 +33,10 @@ def bytes_dict_decode(bytes_dict):
 
 
 class JenkinsServer(jenkins.Jenkins):
-    def __init__(self, url=None, username=None, password=None, timeout=None, jobs_path=None):
-        jconf = settings.JENKINSCONF
+    def __init__(self, url=None, username=None, password=None, timeout=None, config_path=None, asset=None):
         self._xml2d = None
-        self.jobs_path = jobs_path
-        if not self.jobs_path:
-            self.jobs_path = jconf['config_path']
-        if not url or not username or not password:
-            url, username, password = jconf['url'], jconf['username'], jconf['password']
+        self.asset = asset
+        self.jobs_path = os.path.join(config_path, 'jobs')
         super().__init__(url, username=username, password=password)
 
     def XML2Dict(self):
