@@ -15,7 +15,13 @@
             <div class="box-header">
             </div>
             <!-- /.box-header -->
+
             <div class="box-body">
+                <select class="form-control" name="asset_id" id="_asset">
+                {% for object in objects %}
+                    <option value="{{ object.pk }}">{{ object }}</option>
+                {% endfor %}
+                </select>
               <table id="example1" class="table table-bordered table-striped">
               </table>
             </div>
@@ -42,11 +48,19 @@
 <script src="{% static '/demoapps/js/index.js' %}"></script>
 
 <script>
+var url = "{% url 'jenkins_a-api-url:job-building-list' %}";
+$(function () {
+  var asset_id = $("#_asset").val();
+  console.log(asset_id)
+  table_render(url, asset_id)
 
-  $(function () {
-    //table2_demo4_js_start
-    //表格(DataTables)-4，综合示例
-    var language = {
+});
+
+function table_render(url, asset_id) {
+  if(! asset_id){
+    return false
+  }
+  var language = {
       search: '搜索：',
       lengthMenu: "每页显示 _MENU_ 记录",
       zeroRecords: "没找到相应的数据！",
@@ -63,7 +77,7 @@
         next: '下一页',
       }
     };
-    $("#example1").dataTable({
+  $("#example1").dataTable({
         autoWidth: false,
         lengthChange: true, //不允许用户改变表格每页显示的记录数
         pageLength : 5, //每页显示几条数据
@@ -71,7 +85,8 @@
         pagingType: 'full_numbers',
         {#ajax : "{% url 'jenkins_a-api-url:job-building-list' %}",#}
         ajax: {
-            "url": "{% url 'jenkins_a-api-url:job-building-list' %}",
+            "url": url,
+            param: {'asset_id': asset_id},
             "dataSrc": function ( json ) {
                 return json;},
             error: function (err) {
@@ -104,10 +119,9 @@
         ],
         language:language
     });
-
-    var t = $("#example1").DataTable();//获取datatables对象
+  var t = $("#example1").DataTable();//获取datatables对象
     //停止按钮绑定事件
-    $("#example1 tbody").on('click', 'a.stop', function(){
+  $("#example1 tbody").on('click', 'a.stop', function(){
         var row = t.row($(this).parents('tr') ),//获取按钮所在的行
           data = row.data();
         console.log(data)
@@ -116,15 +130,13 @@
         }
 
     });
-    $("#example1 tbody").on('click', 'a.console_log', function(){
+  $("#example1 tbody").on('click', 'a.console_log', function(){
         var row = t.row($(this).parents('tr') ),//获取按钮所在的行
         data = row.data();
         output_console_log(data.name, data.number);
 
     });
-    //table2_demo4_js_end
-  });
-
+}
 // 查看日志输出
 function output_console_log(name, number){
     var parameter = "?name=" + name + "&number=" + number

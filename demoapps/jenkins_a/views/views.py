@@ -10,13 +10,17 @@ from django.views import View
 
 from blueking.component.apis.bk_login import CollectionsBkLogin
 from jenkins_a.forms import JobConfForm
+from jenkins_a.models import JenkinsConfig
 from jenkins_a.utils import stamp_to_datetime, JenkinsServer
 from blueking.component.shortcuts import get_client_by_request
 
 
 class JobBuildingListView(View):
     def get(self, request, *args, **kwargs):
-        return render(request, 'demoapps/jenkins/job_building_list.html')
+        context = {
+            'objects': JenkinsConfig.objects.all()
+        }
+        return render(request, 'demoapps/jenkins/job_building_list.html', context)
 
 
 class JobBuildFaildList(View):
