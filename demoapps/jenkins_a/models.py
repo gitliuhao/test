@@ -7,6 +7,7 @@ from asset.models import AssetAbstract
 
 class JenkinsConfig(AssetAbstract):
     url = models.URLField(verbose_name='访问地址')
+    config_path = models.CharField(verbose_name='jenkins数据储存路径', default='~/.jenkins', max_length=50)
 
     class Meta:
         verbose_name = "jenkins配置"
