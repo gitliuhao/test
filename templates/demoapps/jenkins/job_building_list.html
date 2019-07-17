@@ -49,17 +49,12 @@
 
 <script>
 var url = "{% url 'jenkins_a-api-url:job-building-list' %}";
-var jk_id = $("#_jk_conf").val();
-var param_data = {'jk_id': jk_id}
 $(function () {
-  table_render(url, jk_id);
+  if($("#_jk_conf").val()){
+    table_render(url);
+  }
 　$('#_jk_conf').change(function(){
-    var jk_id = $(this).val();
-    var param_data = {'jk_id': jk_id}
-    console.log(window.t)
-    {#window.t.ajax.data={'jk_id': jk_id}#}
     window.t.ajax.reload()
-    console.log(window.t.ajax.url)
     })
 });
 
@@ -93,7 +88,8 @@ function table_render(url) {
         {#ajax : "{% url 'jenkins_a-api-url:job-building-list' %}",#}
         ajax: {
             "url": url,
-            data: param_data,
+            data: {"jk_id": function () {return $("#_jk_conf").val();}
+            },
             "dataSrc": function ( json ) {
                 return json;},
             error: function (err) {
