@@ -2,16 +2,28 @@ from django.conf import settings
 from django.db import models
 
 # Create your models here.
-from asset.models import AssetAbstract
+from asset.models import Asset
 
 
-class JenkinsConfig(AssetAbstract):
+class JenkinsConfig(models.Model):
+    username = models.CharField(max_length=20, verbose_name='用户名')
+    password = models.CharField(max_length=20, verbose_name='密码')
     url = models.URLField(verbose_name='访问地址')
     config_path = models.CharField(verbose_name='jenkins数据储存路径', default='~/.jenkins', max_length=50)
+    asset = models.OneToOneField(Asset, verbose_name='主机', on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = "jenkins配置"
         verbose_name_plural = verbose_name
 
     def __str__(self):
-        return "%s@%s" % (self.username, self.host)
+        return "%s" % self.url
+
+    def config_to_dict(self):
+        return {
+            'username': self.username,
+            'host': self.host,
+            'key_filename': self.ssh_key_url(),
+            'config_path': self.config_path,
+            'url': self.url
+        }
