@@ -9,7 +9,7 @@ from dwebsocket import accept_websocket
 
 from asset.forms import AssetForm
 from asset.models import Asset
-from asset.task import ControlSsh
+from asset.ssh_client import ControlSsh
 
 # Create your views here.
 # from sset import traverse, system_path_search
