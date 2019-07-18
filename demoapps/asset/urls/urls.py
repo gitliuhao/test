@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from demoapps.asset import views
+from asset.views import views
 
 urlpatterns = (
     # url(r'^$', views.asset, name='asset-list'),

@@ -67,7 +67,7 @@ def tailf(request):
             log_list += xssh.find_log_list(path)
         except Exception as e:
             kwargs_data['errors'] = str(e)
-    return render(request, '../templates/demoapps/asset/tailf.html', kwargs_data)
+    return render(request, 'demoapps/asset/tailf.html', kwargs_data)
 
 
 def local_tailf(request):

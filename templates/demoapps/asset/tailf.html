@@ -1,48 +1,73 @@
-{% extends "asset/base.html" %}
+{% extends "demoapps/base.html" %}
 
 {% block content %}
+<div class="king-layout1-content" style="margin-left:216px;">
+    <form>
+        <div class="col-sm-8">
+          <select class="form-control" name="asset_id" id="asset_id" style="width: 300px">
+            <option value="">选择要监听的主机</option>
+            {% for asset in assets %}
+            <option value="{{ asset.id }}"{% if asset == select_asset %}selected {% endif %}>{{ asset.username }}@{{ asset.host }}</option>
+            {% endfor %}
+          </select>
+        </div>
+    </form>
+    <br>
 
-<form>
     <div class="col-sm-8">
-      <select class="form-control", name="asset_id">
-        <option value="">选择要监听的主机</option>
-        {% for asset in assets %}
-        <option value="{{ asset.id }}"{% if asset == select_asset %}selected {% endif %}>{{ asset.username }}@{{ asset.host }}</option>
+      <select class="form-control" id="filepath" style="width: 300px">
+        <option value="">选择要监听的日志</option>
+        {% for log in log_list %}
+        <option value="{{ log }}">{{ log }}</option>
         {% endfor %}
       </select>
+    <input class="btn btn-success" type="button" onclick="connect()" value="开始监听"/>
+    <input class="btn btn-warning" type="button" onclick="goclose()" value="终止监听"/><br/><br/>
     </div>
-    <div class="col-sm-8">
-        <input class="form-control" name="path" value="{{ request.GET.path }}">
-{#        <input class="form-control" name="server_ip" value="{{ request.GET.server_ip }}", type="hidden">#}
-        {% if errors %}
-        <font color="red">{{ errors }}</font>
-        {% endif %}
+    {#<div class="col-sm-2">#}
+    {#  <input class="btn btn-success btn-block" type="button" onclick="connect()" value="开始监听"/><br/>#}
+    {#</div>#}
+    {#<div class="col-sm-2">#}
+    {#  <input class="btn btn-warning btn-block" type="button" onclick="goclose()" value="终止监听"/><br/>#}
+    {#</div>#}
+    <div class="col-sm-12">
+      <textarea class="form-control" id="chat-log" disabled rows="20"></textarea>
     </div>
-    <div class="col-sm-2">
-        <input class="btn btn-success btn-block" type="submit" value="提交路径"/><br/>
-    </div>
-</form>
+</div>
+{% endblock %}
+{% block js %}
+    {% load static %}
+{#<script type="text/javascript" src="{% static '/asset/js/jquery-ui.min.js' %}"></script>#}
+<script>
+var asset_select = get_asset_id_select();
+    asset_select.change(function () {
+    reload_system_filepath_select();
+});
 
-
-<div class="col-sm-8">
-  <select class="form-control" id="file">
-    <option value="">选择要监听的日志</option>
-    {% for log in log_list %}
-    <option value="{{ log }}">{{ log }}</option>
-    {% endfor %}
-  </select>
-</div>
-<div class="col-sm-2">
-  <input class="btn btn-success btn-block" type="button" onclick="connect()" value="开始监听"/><br/>
-</div>
-<div class="col-sm-2">
-  <input class="btn btn-warning btn-block" type="button" onclick="goclose()" value="终止监听"/><br/>
-</div>
-<div class="col-sm-12">
-  <textarea class="form-control" id="chat-log" disabled rows="20"></textarea>
-</div>
-    <script>
-
+function reload_system_filepath_select() {
+  var asset_id = get_asset_id_select().val();
+  if (!asset_id){return null}
+  $.ajax({
+    method: 'get',
+    url: "{% url 'asset-api-url:system-filename-list' %}",
+    data: {
+      asset_id: asset_id
+    },
+    async: false,
+    success: function (data) {
+        job_select.empty();
+        $.each(data, function(i, n){
+          job_select.append("<option value='"+ n + "'>" + n + "</option>");
+        });
+    }
+  })
+}
+function get_asset_id_select() {
+  return $("#asset_id");
+}
+function get_filepath_select() {
+  return $("#filepath");
+}
   function connect() {
     if ( $('#file').val() ) {
       var args = window.location.search

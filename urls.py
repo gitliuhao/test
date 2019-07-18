@@ -27,8 +27,9 @@ urlpatterns = [
     # 如果你习惯使用 mako 模板，请在 mako_application 里开发你的应用，
     # 这里的 mako_application 可以改成你想要的名字
     url(r'^mako/', include('mako_application.urls')),
-    url(r'^asset/', include('asset.urls', namespace='asset-url')),
+    url(r'^asset/', include('asset.urls.urls', namespace='asset-url')),
     url(r'^', include('jenkins_a.urls.urls', namespace='jenkins_a-url')),
     url(r'^jenkins/api/', include('jenkins_a.urls.api_urls', namespace='jenkins_a-api-url')),
+    url(r'^asset/api/', include('asset.urls.api_urls', namespace='asset-api-url')),
     url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]
