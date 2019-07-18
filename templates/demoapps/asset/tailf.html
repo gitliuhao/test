@@ -55,7 +55,7 @@ function reload_system_filepath_select() {
     },
     async: false,
     success: function (data) {
-        job_select.empty();
+        get_filepath_select().empty();
         $.each(data, function(i, n){
           job_select.append("<option value='"+ n + "'>" + n + "</option>");
         });

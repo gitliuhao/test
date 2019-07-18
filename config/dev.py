@@ -129,7 +129,7 @@ DATABASES = {
         'NAME': APP_CODE,
         'USER': 'root',
         'PASSWORD': '123456',
-        'HOST': '10.10.10.24',
+        'HOST': 'localhost',
         'PORT': '3306',
     },
 }

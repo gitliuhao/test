@@ -63,7 +63,7 @@ def tailf(request):
         asset = get_object_or_404(Asset, pk=asset_id)
         kwargs_data['select_asset'] = asset
         try:
-            xssh = ControlSsh(username=asset.username, host=asset.host, key_filename=asset.ssh_key_url())
+            xssh = ControlSsh(**asset.config_dict())
             log_list += xssh.find_log_list(path)
         except Exception as e:
             kwargs_data['errors'] = str(e)
@@ -96,10 +96,9 @@ def local_file_list(request):
 def tailf_socket(request):
     if request.is_websocket():#判断是不是websocket连接
         path, log_name = request.GET.get('path'), request.GET.get('log_name')
-
         asset_id = request.GET.get('asset_id')[0]
         asset = get_object_or_404(Asset, pk=asset_id)
-        xssh = ControlSsh(username=asset.username, host=asset.host, key_filename=asset.ssh_key_url())
+        xssh = ControlSsh(**asset.config_dict())
         log_path = path+log_name if path[-1] == "/" else path+'/'+log_name
         xssh.send_tailf_log(log_path, request.websocket)
 
