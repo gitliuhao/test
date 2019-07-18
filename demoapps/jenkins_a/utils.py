@@ -9,6 +9,8 @@ from django.conf import settings
 from django.http import Http404
 from encoder import XML2Dict
 
+from asset.ssh_client import ControlSsh
+
 
 def stamp_to_datetime(stamp, unit='s', format=None):
     if unit=="ms":
@@ -37,7 +39,14 @@ class JenkinsServer(jenkins.Jenkins):
         self._xml2d = None
         self.asset = asset
         self.jobs_path = os.path.join(config_path, 'jobs')
+        self._ssh_client = None
         super().__init__(url, username=username, password=password)
+
+    @property
+    def ssh_client(self):
+        if not self._ssh_client:
+            self._ssh_client = ControlSsh(**self.asset).ssh_client
+        return self._ssh_client
 
     def XML2Dict(self):
         if not self._xml2d:
@@ -121,10 +130,16 @@ class JenkinsServer(jenkins.Jenkins):
         except FileNotFoundError:
             pass
 
+    def listdir(self, path):
+        # job_name_list = [job_name.encode('utf-8', errors='surrogateescape').decode('utf-8') for job_name in
+        #                  job_name_list]
+        _, out, _ = self.ssh_client.exec_command("ls %s" % self.jobs_path)
+        path_list = [x for x in out.read().decode().split('\n') if x]
+        return path_list
+
     def get_job_name_list(self):
-        job_name_list = os.listdir(self.jobs_path)
-        job_name_list = [job_name.encode('utf-8', errors='surrogateescape').decode('utf-8') for job_name in job_name_list]
-        return job_name_list
+        jobs_path = self.jobs_path
+        return self.listdir(jobs_path)
 
     def get_job_build_info(self, name, number, field_names=None):
         if field_names is None:

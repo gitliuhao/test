@@ -24,12 +24,14 @@ class JobBuildingListView(View):
 
 class JobBuildFaildList(View):
     def get(self, request, *args, **kwargs):
-        data = {}
+        context = {
+            'objects': JenkinsConfig.objects.all()
+        }
         try:
-            data['job_name_list'] = JenkinsServer().get_job_name_list()
+            context['job_name_list'] = JenkinsServer().get_job_name_list()
         except Exception as e:
-            data['errors'] = str(e)[:100]
-        return render(request, 'demoapps/jenkins/job_build_faild_list.html', data)
+            context['errors'] = str(e)[:100]
+        return render(request, 'demoapps/jenkins/job_build_faild_list.html', context)
 
 
 class JenkinsView(View):

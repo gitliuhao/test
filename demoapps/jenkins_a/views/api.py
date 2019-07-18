@@ -34,6 +34,17 @@ class JobBuildingStopApi(View):
             return JsonResponse({'success': False, 'code': 400, 'error': str(e)})
 
 
+class JobNameListApi(View):
+    ''' 查看任务名称列表 '''
+    def get(self, request, *args, **kwargs):
+        reqd = request.GET
+        jk_id = reqd.get('jk_id', 0) or 0
+        jk = get_object_or_404(JenkinsConfig, pk=jk_id)
+        server = JenkinsServer(**jk.config_to_dict())
+        job_name_list = server.get_job_name_list()
+        return HttpResponse(json.dumps(job_name_list),  content_type="application/json")
+
+
 class JobBuildFaildListApi(View):
     ''' 失败的构建记录列表 '''
     def get(self, request, *args, **kwargs):
