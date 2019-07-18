@@ -137,10 +137,15 @@ function table_render(url) {
 }
 // 查看日志输出
 function output_console_log(name, number){
-    var parameter = "?name=" + name + "&number=" + number
+    var parameter = {
+      name: name,
+      number: number,
+      jk_id: $("#_jk_conf").val()
+    };
     $.ajax({
         method: "get",
-        url:"{% url 'jenkins_a-url:job-build-console-input-api' %}" + parameter,
+        url:"{% url 'jenkins_a-api-url:job-build-console-input-api' %}",
+        data: parameter,
         success: function(data) {
             var build_console_output = data.build_console_output;
             document.querySelector('#chat-log').value = build_console_output;
@@ -151,24 +156,29 @@ function output_console_log(name, number){
 }
 
 function reload_console_log(name, number){
-        var parameter = "?name=" + name + "&number=" + number;
-        $.ajax({
-            method: "get",
-            url:"{% url 'jenkins_a-url:job-build-console-input-api'  %}" + parameter,
-            success: function(data) {
-                change_output = data.change_output;
-                if (change_output){
-                  document.querySelector('#chat-log').value += change_output;
-                  $('#chat-log').scrollTop($('#chat-log')[0].scrollHeight);
-                }
-                if (data.building==false){
-                    clearTimeout(s);
-                }
-            },
-            error: function (err) {
-                window.clearInterval(window.s);
+    var parameter = {
+      name: name,
+      number: number,
+      jk_id: $("#_jk_conf").val()
+    };
+    $.ajax({
+        method: "get",
+        url:"{% url 'jenkins_a-api-url:job-build-console-input-api'  %}",
+        data: parameter,
+        success: function(data) {
+            var change_output = data.change_output;
+            if (change_output){
+              document.querySelector('#chat-log').value += change_output;
+              $('#chat-log').scrollTop($('#chat-log')[0].scrollHeight);
             }
-        })
+            if (data.building==false){
+                clearTimeout(s);
+            }
+        },
+        error: function (err) {
+            window.clearInterval(window.s);
+        }
+    })
 }
 
 // 终止任务
@@ -178,6 +188,7 @@ function stop_building_job(name, number) {
       {
         name:name,
         number:number,
+        jk_id: $("#_jk_conf").val(),
         csrfmiddlewaretoken: "{{ csrf_token }}",
       },
       function(result){

@@ -12,7 +12,6 @@ from blueking.component.apis.bk_login import CollectionsBkLogin
 from jenkins_a.forms import JobConfForm
 from jenkins_a.models import JenkinsConfig
 from jenkins_a.utils import stamp_to_datetime, JenkinsServer
-from blueking.component.shortcuts import get_client_by_request
 
 
 class JobBuildingListView(View):
@@ -73,45 +72,22 @@ class JobConsoleInputView(View):
                        'name': name, 'number': number})
 
 
-class JobConsoleInputApi(View):
-    def get(self, request, *args, **kwargs):
-        name, number = request.GET.get('name'), request.GET.get('number')
-        server = JenkinsServer()
-        number = int(number)
-        build_console_output = server.get_build_console_output(name=name, number=number)
-        build_info = server.get_build_info(name=name, number=number)
-        building = build_info['building']
-        cache_name = "{number}_{name}_build_console_output_list".format(name=name, number=number)
-        change_output = ''
-        # 设置缓存名称
-        cach_list = cache.get(cache_name)
-        # 获取缓存值，如果不存在则设置缓存值
-        if cach_list:
-            change_output = build_console_output[len(cach_list):]
-        if building:
-            cache.set(cache_name, build_console_output)
-        else:
-            cache.delete(cache_name)
-
-        return JsonResponse({'build_console_output': build_console_output,
-                             'building': building, "change_output": change_output})
-
-
 class JobCreateView(View):
     ''' Job 创建'''
+
     def get(self, request, *args, **kwargs):
         forms = JobConfForm()
         return render(request, 'demoapps/jenkins/job_config_form.html', {'forms': forms})
 
     def post(self, request, *args, **kwargs):
-        forms= JobConfForm(data=request.POST, files=request.FILES)
+        forms = JobConfForm(data=request.POST, files=request.FILES)
         if not forms.is_valid():
             return render(request, 'demoapps/jenkins/job_config_form.html', {'forms': forms})
 
         j_server = JenkinsServer()
         data = forms.cleaned_data
         name, config_xml = data['name'], data['config_xml']
-        cx  = config_xml.file.read().decode()
+        cx = config_xml.file.read().decode()
         try:
             j_server.create_job(name=name, config_xml=cx)
         except Exception as e:
@@ -128,19 +104,20 @@ class JobDeleteView(View):
 
 class JobUpdateView(View):
     ''' Job 配置修改 '''
+
     def get(self, request, name, *args, **kwargs):
         forms = JobConfForm(initial={'name': name})
         return render(request, 'demoapps/jenkins/job_config_form.html', {'forms': forms})
 
     def post(self, request, name, *args, **kwargs):
-        forms= JobConfForm(data=request.POST, files=request.FILES)
+        forms = JobConfForm(data=request.POST, files=request.FILES)
         if not forms.is_valid():
             return render(request, 'demoapps/jenkins/job_config_form.html', {'forms': forms})
 
         j_server = JenkinsServer()
         data = forms.cleaned_data
         name, config_xml = data['name'], data['config_xml']
-        cx  = config_xml.file.read().decode()
+        cx = config_xml.file.read().decode()
         try:
             j_server.create_job(name=name, config_xml=cx)
         except Exception as e:
@@ -150,17 +127,19 @@ class JobUpdateView(View):
 
 class JobConfigView(View):
     ''' Job 获取配置文件'''
+
     def get(self, request, name, *args, **kwargs):
         j_server = JenkinsServer()
         job_xml = j_server.get_job_config(name)
         response = HttpResponse(job_xml, content_type="application/xml")
-        response['Content-Disposition'] =  'attachment;filename="%s.xml"' % name
+        response['Content-Disposition'] = 'attachment;filename="%s.xml"' % name
         return response
 
 
 class JobBuildView(View):
     ''' Job 立即构建
     '''
+
     def post(self, request, *args, **kwargs):
         server = JenkinsServer()
         name = request.POST.get('name')

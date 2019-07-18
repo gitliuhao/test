@@ -7,6 +7,7 @@ from django.views import View
 
 from jenkins_a.models import JenkinsConfig
 from jenkins_a.utils import JenkinsServer
+from django.core.cache import cache
 
 
 class JobBuildingListApi(View):
@@ -22,9 +23,11 @@ class JobBuildingListApi(View):
 class JobBuildingStopApi(View):
     ''' 中断运行中的任务构建 '''
     def post(self, request, *args, **kwargs):
-        name, number = request.POST.get('name'), request.POST.get('number')
+        reqd = request.POST
+        name, number, jk_id = reqd.get('name'), reqd.get('number'), reqd.get('jk_id', 0) or 0
+        jk = get_object_or_404(JenkinsConfig, pk=jk_id)
         try:
-            server = JenkinsServer()
+            server = JenkinsServer(**jk.config_to_dict())
             server.stop_build(name=name, number=number)
             return JsonResponse({'success': True, 'code': 200})
         except Exception as e:
@@ -63,3 +66,30 @@ class JobBuildApi(View):
             return JsonResponse({'success': True})
         except jenkins.EmptyResponseException as e:
             return JsonResponse({'success': False, 'error': str(e)[:200]})
+
+
+class JobConsoleInputApi(View):
+    ''' 查看任务构建日志 '''
+    def get(self, request, *args, **kwargs):
+        reqd = request.GET
+        name, number, jk_id = reqd.get('name'), reqd.get('number'), reqd.get('jk_id', 0) or 0
+        jk = get_object_or_404(JenkinsConfig, pk=jk_id)
+        server = JenkinsServer(**jk.config_to_dict())
+        number = int(number)
+        build_console_output = server.get_build_console_output(name=name, number=number)
+        build_info = server.get_build_info(name=name, number=number)
+        building = build_info['building']
+        cache_name = "{number}_{name}_build_console_output_list".format(name=name, number=number)
+        change_output = ''
+        # 设置缓存名称
+        cach_list = cache.get(cache_name)
+        # 获取缓存值，如果不存在则设置缓存值
+        if cach_list:
+            change_output = build_console_output[len(cach_list):]
+        if building:
+            cache.set(cache_name, build_console_output)
+        else:
+            cache.delete(cache_name)
+
+        return JsonResponse({'build_console_output': build_console_output,
+                             'building': building, "change_output": change_output})
