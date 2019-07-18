@@ -27,10 +27,6 @@ class JobBuildFaildList(View):
         context = {
             'objects': JenkinsConfig.objects.all()
         }
-        try:
-            context['job_name_list'] = JenkinsServer().get_job_name_list()
-        except Exception as e:
-            context['errors'] = str(e)[:100]
         return render(request, 'demoapps/jenkins/job_build_faild_list.html', context)
 
 

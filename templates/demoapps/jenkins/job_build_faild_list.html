@@ -126,8 +126,12 @@ $(function () {
         datatable_config.ajax= {
             url: "{% url 'jenkins_a-api-url:job-build-failed-list' %}",
             data: function (t) {
-              var select_val = $("#job_select").val();
-              return {"job_name": select_val}
+              var job_name = $("#job_select").val();
+              var jk_id = get_jk_conf().val();
+              return {
+                job_name: job_name,
+                jk_id: jk_id
+              }
             },
             dataSrc: function ( json ) {
               return json;
@@ -135,9 +139,8 @@ $(function () {
         }
     }
     $("#example1").dataTable(datatable_config);
-    // 任务构建
     var t = $("#example1").DataTable();//获取datatables对象
-
+      // 任务构建
     $("#example1 tbody").on('click', 'button.job_build', function () {
       var row = t.row($(this).parents('tr'));
       var data = row.data();
@@ -146,7 +149,8 @@ $(function () {
             type: 'POST',
             data: {
               name: data.name,
-              csrfmiddlewaretoken: "{{ csrf_token }}"
+              csrfmiddlewaretoken: "{{ csrf_token }}",
+              jk_id: get_jk_conf().val()
             },
             success: function (result) {
                 if(result.success){
@@ -173,7 +177,8 @@ $(function () {
             data: {
               name: data.name,
               number: data.number,
-              csrfmiddlewaretoken: "{{ csrf_token }}"
+              csrfmiddlewaretoken: "{{ csrf_token }}",
+              jk_id: get_jk_conf().val()
             },
             success: function (result) {
                 if(result.success){
@@ -195,7 +200,7 @@ $(function () {
         build_faild_output_console_log_event(this, t);
     });
     // jenkins配置变动时触发事件
-    $("#_jk_conf").change(function (re) {
+    get_jk_conf().change(function (re) {
         reload_job_name();
     });
     // 任务名称发生变动时触发事件
@@ -209,8 +214,13 @@ $(function () {
 function build_faild_output_console_log_event(i_obj, t){
     var tr = $(i_obj).parents('tr');
     var row = t.row($(i_obj).parents('tr') ),//获取按钮所在的行
+      
     data = row.data();
-    var parameter = "?name=" + data.name + "&number=" + data.number;
+    var parameter = {
+        name: data.name,
+        number: data.number,
+        jk_id: get_jk_conf().val()
+    };
     var ntr = $(tr).next();
     // 显示
     if($(i_obj).hasClass("glyphicon-chevron-down")){
@@ -220,14 +230,15 @@ function build_faild_output_console_log_event(i_obj, t){
         }else {
             $.ajax({
                 method: "get",
-                url:"{% url 'jenkins_a-api-url:job-build-console-input-api' %}" + parameter,
+                url:"{% url 'jenkins_a-api-url:job-build-console-input-api' %}",
+                data: parameter,
                 success: function(data) {
                     var build_console_output = data.build_console_output;
                     if (build_console_output) {
                       htm = "<tr class=\"detail\" style=\"\">\n" +
                                 "<td colspan=\"7\">\n" +
                                     "<pre>" +
-                                        build_console_output +
+                                    html_encode(build_console_output) +
                                     "</pre>" +
                                 "</td>\n" +
                             "</tr>";
@@ -250,7 +261,7 @@ function build_faild_output_console_log_event(i_obj, t){
 
 // 任务名列表下拉显示
 function reload_job_name() {
-  var jk_id = $("#_jk_conf").val();
+  var jk_id = get_jk_conf().val();
   var job_select = $("#job_select");
   job_select.show();
   $.ajax({
@@ -265,7 +276,14 @@ function reload_job_name() {
         });
     }
   })
-
 }
+function get_jk_conf() {
+  return $("#_jk_conf")
+}
+
+function html_encode(str)
+	{
+        return str.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+	}
 </script>
 {% endblock %}

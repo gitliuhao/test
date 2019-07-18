@@ -48,7 +48,9 @@ class JobNameListApi(View):
 class JobBuildFaildListApi(View):
     ''' 失败的构建记录列表 '''
     def get(self, request, *args, **kwargs):
-        server = JenkinsServer()
+        jk_id = request.GET.get('jk_id', 0) or 0
+        jk = get_object_or_404(JenkinsConfig, pk=jk_id)
+        server = JenkinsServer(**jk.config_to_dict())
         name = request.GET.get('job_name')
         build_iter = server.get_all_build_iter(name=name)
         job_build_faild_list = [build for build in build_iter if build['result'] == 'FAILURE']
@@ -58,8 +60,10 @@ class JobBuildFaildListApi(View):
 class JobBuildDeleteApi(View):
     ''' 构建记录删除操作'''
     def post(self, request, *args, **kwargs):
-        name, number = request.POST.get('name'), request.POST.get('number')
-        server = JenkinsServer()
+        reqd = request.POST
+        name, number, jk_id = reqd.get('name'), reqd.get('number'), reqd.get('jk_id', 0) or 0
+        jk = get_object_or_404(JenkinsConfig, pk=jk_id)
+        server = JenkinsServer(**jk.config_to_dict())
         try:
             server.delete_job_build(name, int(number))
             return JsonResponse({'success': True})
@@ -70,7 +74,9 @@ class JobBuildDeleteApi(View):
 class JobBuildApi(View):
     ''' 任务构建 '''
     def post(self, request, *args, **kwargs):
-        server = JenkinsServer()
+        jk_id = request.POST.get('jk_id', 0) or 0
+        jk = get_object_or_404(JenkinsConfig, pk=jk_id)
+        server = JenkinsServer(**jk.config_to_dict())
         name = request.POST.get('name')
         try:
             queue = server.build_job(name)

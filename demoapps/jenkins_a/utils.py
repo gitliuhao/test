@@ -122,18 +122,16 @@ class JenkinsServer(jenkins.Jenkins):
 
     def get_file_path_xml2d(self, file_path):
         xml = self.XML2Dict()
-        try:
-            with open(file_path, 'r') as f:
-                b = f.read()
-                the_dict = xml.parse(b)
-                return the_dict
-        except FileNotFoundError:
-            pass
+        _, out, _ = self.ssh_client.exec_command("cat %s" % file_path)
+        xml_str = out.read().decode()
+        if xml_str:
+            the_dict = xml.parse(xml_str)
+            return the_dict
 
     def listdir(self, path):
         # job_name_list = [job_name.encode('utf-8', errors='surrogateescape').decode('utf-8') for job_name in
         #                  job_name_list]
-        _, out, _ = self.ssh_client.exec_command("ls %s" % self.jobs_path)
+        _, out, _ = self.ssh_client.exec_command("ls %s" % path)
         path_list = [x for x in out.read().decode().split('\n') if x]
         return path_list
 
@@ -174,7 +172,7 @@ class JenkinsServer(jenkins.Jenkins):
         ''' 查看一个任务的所有构建记录。返回迭代器'''
         job_builds_path = os.path.join(os.path.join(self.jobs_path, name), 'builds')
         try:
-            build_number_list = os.listdir(job_builds_path)
+            build_number_list = self.listdir(job_builds_path)
         except FileNotFoundError:
             build_number_list = []
         for build_number in build_number_list:

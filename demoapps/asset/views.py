@@ -106,7 +106,6 @@ def tailf_socket(request):
 
 @accept_websocket
 def local_tailf_socket(request):
-
     if request.is_websocket():#判断是不是websocket连接
         log_path = request.GET.get('log_path')
         root_path = "/data/xls/runtime"
