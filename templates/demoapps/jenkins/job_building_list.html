@@ -50,18 +50,13 @@
 <script>
 var url = "{% url 'jenkins_a-api-url:job-building-list' %}";
 $(function () {
-  if($("#_jk_conf").val()){
-    table_render(url);
-  }
+table_render(url);
 　$('#_jk_conf').change(function(){
     window.t.ajax.reload()
     })
 });
 
 function table_render(url) {
-  if(! jk_id){
-    return false
-  }
   var language = {
       search: '搜索：',
       lengthMenu: "每页显示 _MENU_ 记录",
@@ -85,7 +80,6 @@ function table_render(url) {
         pageLength : 5, //每页显示几条数据
         {#lengthMenu: [5, 10, 20], //每页显示选项#}
         pagingType: 'full_numbers',
-        {#ajax : "{% url 'jenkins_a-api-url:job-building-list' %}",#}
         ajax: {
             "url": url,
             data: {"jk_id": function () {return $("#_jk_conf").val();}
