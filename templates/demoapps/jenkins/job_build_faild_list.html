@@ -19,12 +19,12 @@
 {#                </div>#}
             <div class="box-body">
                 <div id="select_box" style="">
-                    <select class="select2_box" style="width:200px;" id="_jk_conf">
+                    <select class="form-control" style="width:200px;" id="_jk_conf">
                           {% for  object in objects %}
                               <option value="{{ object.pk }}">{{ object }}</option>
                           {% endfor %}
                     </select>
-                    <select class="select2_box" style="width:200px; display: none" id="job_select">
+                    <select class="form-control" style="width:200px; display: none" id="job_select">
                     </select>
                 </div>
                 {% if errors %}

@@ -16,7 +16,6 @@ def send_line(drfsocket_instance, stdout):
     while True:
         line = stdout.readline()
         if line:
-            print(line)
             drfsocket_instance.send(json.dumps(
                 {
                     "type": "send.message",

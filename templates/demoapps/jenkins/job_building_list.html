@@ -78,7 +78,7 @@ function table_render(url) {
         autoWidth: false,
         lengthChange: true, //不允许用户改变表格每页显示的记录数
         pageLength : 5, //每页显示几条数据
-        {#lengthMenu: [5, 10, 20], //每页显示选项#}
+        lengthMenu: [5, 10, 20], //每页显示选项
         pagingType: 'full_numbers',
         ajax: {
             "url": url,
