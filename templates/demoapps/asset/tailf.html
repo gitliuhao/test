@@ -1,5 +1,12 @@
 {% extends "demoapps/base.html" %}
-
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static '/demoapps/asset/css/font-awesome.min.css' %}">
+{#    <link rel="stylesheet" href="{% static '/demoapps/asset/css/bootstrap.min.css' %}">#}
+    <link rel="stylesheet" href="{% static '/demoapps/asset/css/toastr.min.css' %}">
+  <link rel="stylesheet" href="{% static '/demoapps/asset/css/AdminLTE.min.css' %}">
+  <link rel="stylesheet" href="{% static '/demoapps/asset/css/AdminLTE_all-skins.min.css' %}">
+{% endblock %}
 {% block content %}
 <div class="king-layout1-content" style="margin-left:216px;">
     <form>
@@ -36,17 +43,28 @@
 </div>
 {% endblock %}
 {% block js %}
-    {% load static %}
-{#<script type="text/javascript" src="{% static '/asset/js/jquery-ui.min.js' %}"></script>#}
+<script src="{% static '/demoapps/asset/js/jquery.min.js' %}"></script>
+<script src="{% static '/demoapps/asset/js/jquery.custom.js' %}"></script>
+<script src="{% static '/demoapps/asset/js/adminlte.min.js' %}"></script>
+<script src="{% static '/demoapps/asset/js/bootstrap.min.js' %}"></script>
+<script type="text/javascript" src="{% static '/demoapps/asset/js/toastr.min.js' %}"></script>
 <script>
 var asset_select = get_asset_id_select();
-    asset_select.change(function () {
+reload_system_filepath_select();
+asset_select.change(function () {
     reload_system_filepath_select();
 });
 
 function reload_system_filepath_select() {
-  var asset_id = get_asset_id_select().val();
-  if (!asset_id){return null}
+  var asset_id_select = get_asset_id_select();
+  var asset_id = asset_id_select.val();
+  var filepath_select = get_filepath_select();
+  var init_select = $(filepath_select).children("option[value!='']");
+  {#console.log($("#asset_id option[value!='0']").remove());#}
+  if (!asset_id){
+    init_select.remove();
+    return null
+  }
   $.ajax({
     method: 'get',
     url: "{% url 'asset-api-url:system-filename-list' %}",
@@ -55,9 +73,9 @@ function reload_system_filepath_select() {
     },
     async: false,
     success: function (data) {
-        get_filepath_select().empty();
+        init_select.remove();
         $.each(data, function(i, n){
-          job_select.append("<option value='"+ n + "'>" + n + "</option>");
+          filepath_select.append("<option value='"+ n + "'>" + n + "</option>");
         });
     }
   })
@@ -69,42 +87,80 @@ function get_filepath_select() {
   return $("#filepath");
 }
   function connect() {
-    if ( $('#file').val() ) {
-      var args = window.location.search
-      console.log(args)
+    document.querySelector('#chat-log').value = "";
+    {#var path =  $('#autocomplete-ajax').val();#}
+    if (window.chatSocket){logreload();}
+    var file_path = get_filepath_select().val();
+    var asset_id = get_asset_id_select().val();
+    var param = {file_path:file_path, asset_id:asset_id};
+    if (file_path && asset_id) {
       {#window.chatSocket = new WebSocket(#}
       {#  'ws://' + window.location.host + '/ws/asset/' + $('#file').val() + '/');#}
       window.chatSocket = new WebSocket(
-        'ws://' + window.location.host + '{% url "asset-url:tailf-websocket" %}' + args + "&log_name=" + $('#file').val());
-
-      chatSocket.onmessage = function(e) {
+        {#'ws://' + window.location.host + '{% url "asset-url:local-tailf-websocket" %}'  + "?log_path={{ root_path }}" + path);#}
+        'ws://' + window.location.host + '{% url "asset-url:local-tailf-websocket" %}'  + urlEncode(param));
+      // 连接成功时触发
+      window.chatSocket.onopen = function(e){
+        toastr.success('连接成功')
+      };
+      //消息接受
+      window.chatSocket.onmessage = function(e) {
         var data = JSON.parse(e.data);
         var message = data['message'];
-        document.querySelector('#chat-log').value += (message+'\n');
+        var code = data['code'];
+        if (code==400){
+          toastr.error(message);
+          window.chatSocket.close();
+          return null
+        }
+        document.querySelector('#chat-log').value += (message);
         // 跳转到页面底部
         $('#chat-log').scrollTop($('#chat-log')[0].scrollHeight);
       };
-
-      chatSocket.onerror = function(e) {
-        toastr.error('服务端连接异常！')
-      };
-
       chatSocket.onclose = function(e) {
         toastr.error('websocket已关闭！')
       };
+      window.chatSocket.onerror = function (e) {
+        toastr.warning('连接失败')
+      }
     } else {
-      toastr.warning('请选择要监听的日志文件')
+      toastr.warning('请填写要监听的日志文件')
     }
   }
 
-
-  function goclose() {
-    console.log(window.chatSocket);
-
+  function logreload() {
+    window.chatSocket.onclose = ""
+    window.chatSocket.onerror = "";
     window.chatSocket.close();
+  }
+  function goclose() {
     window.chatSocket.onclose = function(e) {
       toastr.success('已终止日志监听！')
     };
+    window.chatSocket.onerror = "";
+    window.chatSocket.close();
   }
+
+
+var urlEncode = function (param, key, encode, rn=0) {
+  if(param==null) return '';
+  var paramStr = '';
+  var t = typeof (param);
+  if (t == 'string' || t == 'number' || t == 'boolean') {
+    {#console.log(index, 'xxxxxxxxx')#}
+    if(rn==1){
+      paramStr += '?' + key + '=' + ((encode==null||encode) ? encodeURIComponent(param) : param);
+    }else{
+      paramStr += '&' + key + '=' + ((encode==null||encode) ? encodeURIComponent(param) : param);
+    }
+  } else {
+    for (var i in param) {
+      rn += 1;
+      var k = key == null ? i : key + (param instanceof Array ? '[' + i + ']' : '.' + i);
+      paramStr += urlEncode(param[i], k, encode, rn);
+    }
+  }
+  return paramStr;
+}
     </script>
 {% endblock %}

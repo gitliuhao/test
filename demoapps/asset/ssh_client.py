@@ -1,10 +1,28 @@
 from __future__ import absolute_import
 
+import _thread
 import json
 import subprocess
+from time import sleep
 
 import paramiko
+import threading
 from django.conf import settings
+
+from asset.utils import stop_thread
+
+
+def send_line(drfsocket_instance, stdout):
+    while True:
+        line = stdout.readline()
+        if line:
+            print(line)
+            drfsocket_instance.send(json.dumps(
+                {
+                    "type": "send.message",
+                    "message": line
+                }
+            ).encode())  # 把内容发送到websocket服务端
 
 
 class ControlSsh(object):
@@ -47,23 +65,21 @@ class ControlSsh(object):
         # 监控远程的日志变动
         if self.host:
             _, stdout, error = self.exec_command(cmd)
+            # send_line(drfsocket_instance, stdout)
+            t1 = threading.Thread(target=send_line, args=(drfsocket_instance, stdout))
+            t1.start()
             while True:
                 if drfsocket_instance.has_messages():
+                    stop_thread(t1)
                     drfsocket_instance.close()
                     break
-                line = stdout.readline().strip()
-                if line:
-                    drfsocket_instance.send(json.dumps(
-                        {
-                            "type": "send.message",
-                            "message": line.decode()
-                        }
-                    ).encode())  # 把内容发送到websocket服务端
+
         # 监控本地的日志变动
         else:
             popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             while True:
                 line = popen.stdout.readline().strip()
+
                 if drfsocket_instance.has_messages():
                     drfsocket_instance.read()
                     drfsocket_instance.close()
@@ -72,6 +88,7 @@ class ControlSsh(object):
                     drfsocket_instance.send(json.dumps(
                         {
                             "type": "send.message",
+                            "code": 200,
                             "message": line.decode()
                         }
                     ).encode())  # 把内容发送到websocket服务端
@@ -118,3 +135,5 @@ def tailfLog(log_path, drfsocket_instance, server_ip=''):
                     "message": str(line.decode())
                 }
             ))   #把内容发送到websocket服务端
+
+

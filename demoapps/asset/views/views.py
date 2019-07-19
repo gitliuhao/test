@@ -106,10 +106,12 @@ def tailf_socket(request):
 @accept_websocket
 def local_tailf_socket(request):
     if request.is_websocket():#判断是不是websocket连接
-        log_path = request.GET.get('log_path')
+        file_path = request.GET.get('file_path')
+        asset = get_object_or_404(Asset, pk=request.GET.get('asset_id', 0) or 0)
         root_path = "/data/xls/runtime"
-        if len(log_path) <= len(root_path) or root_path != log_path[:len(root_path)]:
-            HttpResponse({"errors": 'not permmission'}, status=403)
-        xssh = ControlSsh()
-        xssh.send_tailf_log(log_path, request.websocket)
+        if root_path not in file_path:
+            request.websocket.send(json.dumps({'code': 400, 'message': '该路径不允许访问'}))
+            return HttpResponse('')
+        xssh = ControlSsh(**asset.config_dict())
+        xssh.send_tailf_log(file_path, request.websocket)
     return HttpResponse('')
