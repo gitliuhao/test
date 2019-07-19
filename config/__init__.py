@@ -15,9 +15,9 @@ pymysql.install_as_MySQLdb()
 # SaaS运行版本，如非必要请勿修改
 RUN_VER = 'open'
 # SaaS应用ID
-APP_CODE = 'o39'
+APP_CODE = 'test123'
 # SaaS安全密钥，注意请勿泄露该密钥
-SECRET_KEY = '66e40bfc-98b1-45b2-a2e4-eb11adde11da'
+SECRET_KEY = 'f99dfdf2-818d-44e4-9331-2da5189447be'
 # 蓝鲸SaaS平台URL, 如 https://paas.blueking.com/
 BK_URL = "http://paas.class.o.qcloud.com"
 # BK_URL = "http://localhost:8001"
