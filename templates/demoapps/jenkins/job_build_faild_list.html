@@ -20,11 +20,18 @@
             <div class="box-body">
                 <div id="select_box" style="">
                     <select class="form-control" style="width:200px;" id="_jk_conf">
+                            <option value="">----请选择jenkins配置----</option>
                           {% for  object in objects %}
-                              <option value="{{ object.pk }}">{{ object }}</option>
+                              <option value="{{ object.pk }}">{{ object.nickname }}</option>
+                              {% empty %}
+
                           {% endfor %}
                     </select>
-                    <select class="form-control" style="width:200px; display: none" id="job_select">
+                    <select class="form-control" style="width:200px;" id="view_select">
+                        <option value="">----请选择任务分类----</option>
+                    </select>
+                    <select class="form-control" style="width:200px;" id="job_select">
+                        <option value="">----请选择任务名称----</option>
                     </select>
                 </div>
                 {% if errors %}
@@ -52,8 +59,21 @@
 <script src="{% static '/demoapps/js/index.js' %}"></script>
 
 <script>
-$(function () {
+var view_job_data_list = [];
+var csrfmiddlewaretoken = "{{ csrf_token }}";
+// jenkins配置变动时触发事件
+get_jk_conf().change(function (re) {
+    reload_view_job_name();
+});
+// 任务名称发生变动时触发事件
+get_view_select().change(function (re) {
     reload_job_name();
+});
+get_job_select().change(function (re) {
+    window.t.ajax.reload()
+});
+
+$(function () {
     var language = {
       search: '搜索：',
       {#lengthMenu: "每页显示 _MENU_ 记录",#}
@@ -121,12 +141,10 @@ $(function () {
         ],
         language:language
     };
-    var select_val = $("#job_select").val();
-    if (select_val){
-        datatable_config.ajax= {
+    datatable_config.ajax= {
             url: "{% url 'jenkins_a-api-url:job-build-failed-list' %}",
             data: function (t) {
-              var job_name = $("#job_select").val();
+              var job_name = get_job_select().val();
               var jk_id = get_jk_conf().val();
               return {
                 job_name: job_name,
@@ -136,10 +154,10 @@ $(function () {
             dataSrc: function ( json ) {
               return json;
             }
-        }
-    }
-    $("#example1").dataTable(datatable_config);
+        };
+    window.t1 = $("#example1").dataTable(datatable_config);
     var t = $("#example1").DataTable();//获取datatables对象
+    window.t = t;
       // 任务构建
     $("#example1 tbody").on('click', 'button.job_build', function () {
       var row = t.row($(this).parents('tr'));
@@ -149,7 +167,7 @@ $(function () {
             type: 'POST',
             data: {
               name: data.name,
-              csrfmiddlewaretoken: "{{ csrf_token }}",
+              csrfmiddlewaretoken: csrfmiddlewaretoken,
               jk_id: get_jk_conf().val()
             },
             success: function (result) {
@@ -177,7 +195,7 @@ $(function () {
             data: {
               name: data.name,
               number: data.number,
-              csrfmiddlewaretoken: "{{ csrf_token }}",
+              csrfmiddlewaretoken: csrfmiddlewaretoken,
               jk_id: get_jk_conf().val()
             },
             success: function (result) {
@@ -199,15 +217,6 @@ $(function () {
     $("#example1 tbody").on('click', 'i#output_console_event', function(){
         build_faild_output_console_log_event(this, t);
     });
-    // jenkins配置变动时触发事件
-    get_jk_conf().change(function (re) {
-        reload_job_name();
-    });
-    // 任务名称发生变动时触发事件
-    $("#job_select").change(function (re) {
-        t.ajax.reload()
-    });
-// 选择任务后重新加载数据
 
 });
 // 构建失败的日志查看
@@ -227,11 +236,13 @@ function build_faild_output_console_log_event(i_obj, t){
         if(ntr.hasClass('detail')){
             ntr.attr('style', '');
             $(i_obj).attr('class', 'glyphicon glyphicon-chevron-up')
-        }else {
+        }else if(!i_obj.executed) {
+            i_obj.executed = true;
             $.ajax({
                 method: "get",
                 url:"{% url 'jenkins_a-api-url:job-build-console-input-api' %}",
                 data: parameter,
+                sync: false,
                 success: function(data) {
                     var build_console_output = data.build_console_output;
                     if (build_console_output) {
@@ -247,6 +258,7 @@ function build_faild_output_console_log_event(i_obj, t){
                     }
                 },
                 error: function (err) {
+                  i_obj.executed = false;
                   response_500_alert(err)
                 }
             });
@@ -262,25 +274,47 @@ function build_faild_output_console_log_event(i_obj, t){
 // 任务分类名列表下拉显示
 function reload_view_job_name() {
   var jk_id = get_jk_conf().val();
-  var job_select = $("#job_select");
-  job_select.show();
-  $.ajax({
+  var view_select = get_view_select();
+  var job_select = get_job_select();
+  view_select.children().not(':eq(0)').remove();
+  job_select.children().not(':eq(0)').remove();
+  if (jk_id){
+    $.ajax({
     method: 'get',
     url: "{% url 'jenkins_a-api-url:view-job-name-list' %}",
     data: {'jk_id': jk_id},
-    async: false,
+    sync: false,
     success: function (data) {
-        job_select.empty();
-        $.each(data, function(i, n){
-          job_select.append("<option value='"+ n + "'>" + n + "</option>")
+        view_job_data_list = data;
+        $.each(view_job_data_list, function(i, n){
+          view_select.append("<option value='"+ n.name + "'>" + n.name + "</option>");
         });
     }
   })
+  }
+}
+
+function reload_job_name() {
+    var view_select = get_view_select();
+    var job_select = get_job_select();
+    job_select.children().not(":eq(0)").remove();
+    var index = view_select.children('option:selected').index();
+    if(view_select.val()){
+      var job_name_list = view_job_data_list[index-1].job_name_list;
+      $.each(job_name_list, function (i, d) {
+        job_select.append("<option value='"+ d + "'>" + d + "</option>")
+      });
+    }
 }
 function get_jk_conf() {
   return $("#_jk_conf")
 }
-
+function get_view_select() {
+  return $("#view_select")
+}
+function get_job_select() {
+  return $("#job_select")
+}
 function html_encode(str)
 	{
         return str.replace(/</g,'&lt;').replace(/>/g,'&gt;');

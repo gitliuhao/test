@@ -142,8 +142,16 @@ class JenkinsServer(jenkins.Jenkins):
         config_xml_path = os.path.join(self.config_path, 'config.xml')
         d = self.get_file_path_xml2d(config_xml_path)
         listView = d['hudson']['views']['listView']
-        listView = d['hudson']['views']['listView']
-        return d
+        listView = [
+            {
+                'name': view['name'],
+                'job_name_list': view['jobNames']['string']
+                if isinstance(view['jobNames']['string'], list) else
+                [view['jobNames']['string']]
+
+            }
+            for view in listView]
+        return listView
 
     def get_job_build_info(self, name, number, field_names=None):
         if field_names is None:
@@ -157,7 +165,7 @@ class JenkinsServer(jenkins.Jenkins):
             return None
         build = the_dict.get('build') or the_dict.get('flow-build')
         for name in field_names:
-            build_data[name] = build[name].decode()
+            build_data[name] = build[name]
         build_data['time'] = stamp_to_datetime(build['timestamp'], unit='ms', format="%Y-%m-%d %H:%M")
         return build_data
 

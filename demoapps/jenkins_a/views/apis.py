@@ -41,17 +41,19 @@ class ViewListJobNameListApi(View):
         jk_id = reqd.get('jk_id', 0) or 0
         jk = get_object_or_404(JenkinsConfig, pk=jk_id)
         server = JenkinsServer(**jk.config_to_dict())
-        job_name_list = server.get_job_name_list()
-        return HttpResponse(json.dumps(job_name_list),  content_type="application/json")
+        view_job_name_list = server.get_view_job_name_list()
+        return HttpResponse(json.dumps(view_job_name_list),  content_type="application/json")
 
 
 class JobBuildFaildListApi(View):
     ''' 失败的构建记录列表 '''
     def get(self, request, *args, **kwargs):
         jk_id = request.GET.get('jk_id', 0) or 0
+        name = request.GET.get('job_name')
+        if not jk_id or not name:
+            return HttpResponse(json.dumps([]), content_type="application/json")
         jk = get_object_or_404(JenkinsConfig, pk=jk_id)
         server = JenkinsServer(**jk.config_to_dict())
-        name = request.GET.get('job_name')
         build_iter = server.get_all_build_iter(name=name)
         job_build_faild_list = [build for build in build_iter if build['result'] == 'FAILURE']
         return HttpResponse(json.dumps(job_build_faild_list), content_type="application/json")
