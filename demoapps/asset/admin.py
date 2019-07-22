@@ -219,6 +219,8 @@ class RegisterModel(object):
             admin.register(self.model_class)(self._new_model_admin())
         except admin.sites.AlreadyRegistered:
             pass
+        except Exception as e:
+            pass
 
 
 RegisterModel(Asset).register()
