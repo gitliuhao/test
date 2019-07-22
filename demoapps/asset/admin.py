@@ -96,15 +96,27 @@ class RegisterModel(object):
                                                                    ) else ()
         self._js = js or ("/django_manager/js/jquery-3.2.1.min.js",)
         self._css = css or {}
-        self.content_type = ContentType.objects.get(model=model.__name__)
+        self._content_type = None
         self.model_class = model
         self._meta = self.model_class._meta
         self.fields = self._meta.fields + self._meta.many_to_many
-        self.app_name = self.content_type.model
+        self._app_name = None
 
         self.wang_editor_fields = wang_editor_fields if isinstance(wang_editor_fields, collections.Iterable) else ()
         self.editor_md_fields = editor_md_fields if isinstance(editor_md_fields, collections.Iterable) else ()
         self.change_form_template = None
+
+    @property
+    def app_name(self):
+        if not self._app_name:
+            self._app_name = self.content_type.model
+        return self._app_name
+
+    @property
+    def content_type(self):
+        if not self._content_type:
+            self._content_type = ContentType.objects.get(model=self.model.__name__)
+        return self._content_type
 
     def get_dispaly_field(self, field):
         return get_field_tag(self.model_class, field)
