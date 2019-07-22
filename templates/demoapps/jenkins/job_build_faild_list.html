@@ -33,6 +33,10 @@
                     <select class="form-control" style="width:200px;" id="job_select">
                         <option value="">----请选择任务名称----</option>
                     </select>
+                    <button class="k-button" onclick="reload_view_job_name()">
+                        <i class="k-icon k-i-refresh"></i>
+                    </button>
+
                 </div>
                 {% if errors %}
                 <font style="color: red">{{ errors }}</font>
@@ -70,7 +74,9 @@ get_view_select().change(function (re) {
     reload_job_name();
 });
 get_job_select().change(function (re) {
-    window.t.ajax.reload()
+    if($(this).val()){
+      window.t.ajax.reload();
+    };
 });
 
 $(function () {
@@ -93,6 +99,7 @@ $(function () {
       }
     };
     var datatable_config = {
+      bProcessing: true,
       autoWidth: false,
       searching: false, //关闭搜索
       lengthChange: false, //不允许用户改变表格每页显示的记录数
