@@ -6,6 +6,7 @@ from asset.models import Asset
 
 
 class JenkinsConfig(models.Model):
+    nickname = models.CharField(max_length=50, verbose_name='别名')
     username = models.CharField(max_length=20, verbose_name='用户名')
     password = models.CharField(max_length=20, verbose_name='密码')
     url = models.URLField(verbose_name='访问地址')

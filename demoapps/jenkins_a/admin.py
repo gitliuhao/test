@@ -1,7 +1,8 @@
 from django.contrib import admin
 
 # Register your models here.
+from asset.admin import RegisterModel
 from jenkins_a.models import JenkinsConfig
 
-admin.site.register(JenkinsConfig)
+RegisterModel(JenkinsConfig).register()
 
