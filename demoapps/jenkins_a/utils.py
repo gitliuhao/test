@@ -1,13 +1,11 @@
 import datetime
 import os
-import sys
 from urllib import parse
 
 import jenkins as jenkins
 import requests
-from django.conf import settings
+import xmltodict
 from django.http import Http404
-from encoder import XML2Dict
 
 from asset.ssh_client import ControlSsh
 
@@ -39,6 +37,7 @@ class JenkinsServer(jenkins.Jenkins):
         self._xml2d = None
         self.asset = asset
         self.jobs_path = os.path.join(config_path, 'jobs')
+        self.config_path = config_path
         self._ssh_client = None
         super().__init__(url, username=username, password=password)
 
@@ -50,7 +49,7 @@ class JenkinsServer(jenkins.Jenkins):
 
     def XML2Dict(self):
         if not self._xml2d:
-            self._xml2d = XML2Dict()
+            self._xml2d = xmltodict
         return self._xml2d
 
     def get_all_job_details(self):
@@ -123,7 +122,7 @@ class JenkinsServer(jenkins.Jenkins):
     def get_file_path_xml2d(self, file_path):
         xml = self.XML2Dict()
         _, out, _ = self.ssh_client.exec_command("cat %s" % file_path)
-        xml_str = out.read().decode()
+        xml_str = out.read()
         if xml_str:
             the_dict = xml.parse(xml_str)
             return the_dict
@@ -138,6 +137,13 @@ class JenkinsServer(jenkins.Jenkins):
     def get_job_name_list(self):
         jobs_path = self.jobs_path
         return self.listdir(jobs_path)
+
+    def get_view_job_name_list(self):
+        config_xml_path = os.path.join(self.config_path, 'config.xml')
+        d = self.get_file_path_xml2d(config_xml_path)
+        listView = d['hudson']['views']['listView']
+        listView = d['hudson']['views']['listView']
+        return d
 
     def get_job_build_info(self, name, number, field_names=None):
         if field_names is None:

@@ -34,8 +34,8 @@ class JobBuildingStopApi(View):
             return JsonResponse({'success': False, 'code': 400, 'error': str(e)})
 
 
-class JobNameListApi(View):
-    ''' 查看任务名称列表 '''
+class ViewListJobNameListApi(View):
+    ''' 查看Viewlist任务分类及任务名称列表 '''
     def get(self, request, *args, **kwargs):
         reqd = request.GET
         jk_id = reqd.get('jk_id', 0) or 0

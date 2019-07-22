@@ -19,7 +19,7 @@
             <div class="box-body">
                 <select class="form-control" name="jk_id" id="_jk_conf">
                 {% for object in objects %}
-                    <option value="{{ object.pk }}">{{ object }}</option>
+                    <option value="{{ object.pk }}">{{ object.nickname }}</option>
                 {% endfor %}
                 </select>
               <table id="example1" class="table table-bordered table-striped">

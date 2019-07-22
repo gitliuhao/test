@@ -259,14 +259,14 @@ function build_faild_output_console_log_event(i_obj, t){
     }
 }
 
-// 任务名列表下拉显示
-function reload_job_name() {
+// 任务分类名列表下拉显示
+function reload_view_job_name() {
   var jk_id = get_jk_conf().val();
   var job_select = $("#job_select");
   job_select.show();
   $.ajax({
     method: 'get',
-    url: "{% url 'jenkins_a-api-url:job-name-list' %}",
+    url: "{% url 'jenkins_a-api-url:view-job-name-list' %}",
     data: {'jk_id': jk_id},
     async: false,
     success: function (data) {

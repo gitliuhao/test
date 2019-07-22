@@ -1,14 +1,11 @@
-import datetime
 import json
 
 import jenkins
-from django.core.cache import cache
-from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseBadRequest, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.views import View
 
-from blueking.component.apis.bk_login import CollectionsBkLogin
 from jenkins_a.forms import JobConfForm
 from jenkins_a.models import JenkinsConfig
 from jenkins_a.utils import stamp_to_datetime, JenkinsServer
