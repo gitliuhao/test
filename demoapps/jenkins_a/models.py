@@ -10,7 +10,7 @@ class JenkinsConfig(models.Model):
     username = models.CharField(max_length=20, verbose_name='用户名')
     password = models.CharField(max_length=20, verbose_name='密码')
     url = models.URLField(verbose_name='访问地址')
-    config_path = models.CharField(verbose_name='jenkins数据储存路径', default='~/.jenkins', max_length=50)
+    config_path = models.CharField(verbose_name='jenkins数据储存路径', default='~/.jenkins', max_length=200)
     asset = models.OneToOneField(Asset, verbose_name='主机', on_delete=models.CASCADE)
 
     class Meta:
