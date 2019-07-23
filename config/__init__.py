@@ -22,8 +22,6 @@ SECRET_KEY = '66e40bfc-98b1-45b2-a2e4-eb11adde11da'
 BK_URL = "http://paas.class.o.qcloud.com"
 # BK_URL = "http://localhost:8001"
 
-SESSION_COOKIE_AGE = 60*60*24
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(
     __file__)))

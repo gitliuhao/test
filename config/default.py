@@ -32,6 +32,8 @@ CACHES = {
         }
     }
 }
+# session认证时间设置
+SESSION_COOKIE_AGE = 60*60*24
 
 # 请在这里加入你的自定义 APP
 INSTALLED_APPS += (
