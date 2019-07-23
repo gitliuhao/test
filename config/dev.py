@@ -93,7 +93,11 @@ LOGGING = {
     },
     'loggers': {
         'django': {  # 默认的logger应用如下配置
-            'handlers': ['default', 'console', 'error'],  # 上线之后可以把'console'移除
+            'handlers': [
+                # 'default',
+                'console',
+                'error'
+            ],  # 上线之后可以把'console'移除
             'level': 'DEBUG',
             'propagate': True,  # 向不向更高级别的logger传递
         },
@@ -101,11 +105,11 @@ LOGGING = {
             'handlers': ['console', 'collect'],
             'level': 'INFO',
         },
-        'scripts': {
-            'handlers': ['scprits_handler'],
-            'level': 'INFO',
-            'propagate': False
-        },
+        # 'scripts': {
+        #     'handlers': ['scprits_handler'],
+        #     'level': 'INFO',
+        #     'propagate': False
+        # },
     },
 }
 
