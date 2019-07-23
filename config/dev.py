@@ -20,7 +20,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
 
-# DJANGO_LOG_LEVEL=DEBUG
+# DJANGO_LOG_LEVEL=True
 
 LOGGING = {
     'version': 1,  # 保留字

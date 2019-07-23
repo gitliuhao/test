@@ -39,7 +39,7 @@ MIDDLEWARE = (
     'whitenoise.middleware.WhiteNoiseMiddleware',
     # Auth middleware
     'blueapps.account.middlewares.WeixinLoginRequiredMiddleware',
-    'blueapps.account.middlewares.LoginRequiredMiddleware',
+    # 'blueapps.account.middlewares.LoginRequiredMiddleware',
     # exception middleware
     'blueapps.core.exceptions.middleware.AppExceptionMiddleware'
 )
@@ -134,8 +134,9 @@ SESSION_COOKIE_AGE = 60
 AUTH_USER_MODEL = 'account.User'
 
 AUTHENTICATION_BACKENDS = (
-    'blueapps.account.backends.WeixinBackend',
-    'blueapps.account.backends.UserBackend',
+    # 'blueapps.account.backends.WeixinBackend',
+    # 'blueapps.account.backends.UserBackend',
+    'django.contrib.auth.backends.ModelBackend',
 )
 
 RE_MOBILE = re.compile(r'Mobile|Android|iPhone|iPad|iPod', re.IGNORECASE)

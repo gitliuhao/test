@@ -15,6 +15,10 @@ docker run --privileged --name=test1 --restart=always -d \
     -p 80:80 \
     -p 8001:8001 \
     -p 8080:8080 \
+    -p 8010:8010 \
+    -p 8003:8003 \
+    -p 8004:8004 \
+    -p 8005:8005 \
     registry.cn-hangzhou.aliyuncs.com/lch_docker_k/test:latest
 
 # mysql数据库容器启动
