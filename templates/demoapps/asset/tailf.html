@@ -77,6 +77,9 @@ function reload_system_filepath_select() {
         $.each(data, function(i, n){
           filepath_select.append("<option value='"+ n + "'>" + n + "</option>");
         });
+    },
+    error: function (re) {
+      response_500_alert(re);
     }
   })
 }

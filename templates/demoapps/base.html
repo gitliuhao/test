@@ -18,7 +18,6 @@
     <link href="https://magicbox.bk.tencent.com/static_api/v3/bk/css/bk.css" rel="stylesheet">
     <link href="https://magicbox.bk.tencent.com/static_api/v3/bk/css/bk_pack.css" rel="stylesheet">
     <link href="https://magicbox.bk.tencent.com/static_api/v3/assets/artDialog-6.0.4/css/ui-dialog.css" rel="stylesheet">
-
     {% block css %}
     {% endblock %}
     <style>
@@ -96,53 +95,8 @@
     <script src="https://magicbox.bk.tencent.com/static_api/v3/assets/js/jquery-1.10.2.min.js"></script>
     <script src="https://magicbox.bk.tencent.com/static_api/v3/assets/bootstrap-3.3.4/js/bootstrap.min.js"></script>
     <script src="https://magicbox.bk.tencent.com/static_api/v3/assets/artDialog-6.0.4/dist/dialog-min.js"></script>
-
-    <script>
-        $(function(){
-             var li = $('.navi li');
-             li.each(function(){
-                var this_li = this;
-               $(this_li).find('a').click(function(){
-                 if( $(this_li).hasClass('c-open')){
-                   $(this_li).find('ul').slideUp(400);
-                   $(this_li).removeClass('c-open');
-                 }else{
-                   $(this_li).find('ul').slideDown(400);
-                   $(this_li).addClass('c-open');
-                 }
-               })
-             });
-        });
-
-$(".has_submenu").each(function(){
-    var t = this;
-    $(t).find('li').each(function () {
-        var a = $(this).find("a:eq(0)")
-        if (window.location.pathname==$(a).attr('href')){
-            $(t).addClass('open');
-            $(this).addClass("active")
-            $(this).find("a:eq(0)").addClass('active')
-        }
-    })
-
-})
-
-// 提示框
-function tooltip(content) {
-    var d=dialog({
-        width: 440,
-        title: "提示",
-        content: '<div class="king-notice3 king-notice-fail">'+
-            '<div class="king-notice-text">'+
-                    content.slice(0, 300) +
-            '</div>'+
-        '</div>',
-    });
-    d.show();
-}
-
-
-    </script>
+    {% load static %}
+    <script src="{% static '/demoapps/js/index.js' %}"></script>
 {% block js %}
 {% endblock %}
 </html>
