@@ -292,10 +292,14 @@ function reload_view_job_name() {
     data: {'jk_id': jk_id},
     sync: false,
     success: function (data) {
-        view_job_data_list = data;
+      view_job_data_list = data;
         $.each(view_job_data_list, function(i, n){
           view_select.append("<option value='"+ n.name + "'>" + n.name + "</option>");
         });
+      },
+    error: function (err) {
+      {#alert(err.responseText)#}
+      tooltip(err.responseText)
     }
   })
   }

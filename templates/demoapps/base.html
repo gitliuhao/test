@@ -17,6 +17,7 @@
     <!--蓝鲸提供的公用样式库 -->
     <link href="https://magicbox.bk.tencent.com/static_api/v3/bk/css/bk.css" rel="stylesheet">
     <link href="https://magicbox.bk.tencent.com/static_api/v3/bk/css/bk_pack.css" rel="stylesheet">
+    <link href="https://magicbox.bk.tencent.com/static_api/v3/assets/artDialog-6.0.4/css/ui-dialog.css" rel="stylesheet">
 
     {% block css %}
     {% endblock %}
@@ -94,7 +95,7 @@
 </body>
     <script src="https://magicbox.bk.tencent.com/static_api/v3/assets/js/jquery-1.10.2.min.js"></script>
     <script src="https://magicbox.bk.tencent.com/static_api/v3/assets/bootstrap-3.3.4/js/bootstrap.min.js"></script>
-
+    <script src="https://magicbox.bk.tencent.com/static_api/v3/assets/artDialog-6.0.4/dist/dialog-min.js"></script>
 
     <script>
         $(function(){
@@ -125,6 +126,22 @@ $(".has_submenu").each(function(){
     })
 
 })
+
+// 提示框
+function tooltip(content) {
+    var d=dialog({
+        width: 440,
+        title: "提示",
+        content: '<div class="king-notice3 king-notice-fail">'+
+            '<div class="king-notice-text">'+
+                    content.slice(0, 300) +
+            '</div>'+
+        '</div>',
+    });
+    d.show();
+}
+
+
     </script>
 {% block js %}
 {% endblock %}
