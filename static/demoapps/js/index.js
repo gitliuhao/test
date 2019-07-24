@@ -3,7 +3,7 @@ $(function(){
      li.each(function(){
         var this_li = this;
        $(this_li).find('a').click(function(){
-         if( $(this_li).hasClass('c-open')){
+         if($(this_li).hasClass('c-open')){
            $(this_li).find('ul').slideUp(400);
            $(this_li).removeClass('c-open');
          }else{
@@ -17,15 +17,15 @@ $(function(){
 $(".has_submenu").each(function(){
     var t = this;
     $(t).find('li').each(function () {
-        var a = $(this).find("a:eq(0)")
+        var a = $(this).find("a:eq(0)");
         if (window.location.pathname==$(a).attr('href')){
             $(t).addClass('open');
-            $(this).addClass("active")
+            $(this).addClass("active");
             $(this).find("a:eq(0)").addClass('active')
         }
     })
 
-})
+});
 
 // 提示框
 function tooltip(content) {
