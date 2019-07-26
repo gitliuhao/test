@@ -1,7 +1,9 @@
-#!/usr/bin/env bash
-docker-machine ssh default "sudo mkdir /sys/fs/cgroup/systemd"
-docker-machine ssh default "sudo mount -t cgroup -o none,name=systemd cgroup /sys/fs/cgroup/systemd"
-docker-machine ssh default "docker network create --driver bridge --subnet=10.10.10.0/24 --gateway=10.10.10.1 mynet"
+#!/bin/bash
+#docker-machine ssh default "sudo mkdir /sys/fs/cgroup/systemd"
+#docker-machine ssh default "sudo mount -t cgroup -o none,name=systemd cgroup /sys/fs/cgroup/systemd"
+#docker-machine ssh default "docker network create --driver bridge --subnet=10.10.10.0/24 --gateway=10.10.10.1 mynet"
+docker network create --driver bridge --subnet=10.10.10.0/24 --gateway=10.10.10.1 mynet
+
 
 workpace=/d/HashiCorp
 db_name=o39
@@ -25,18 +27,19 @@ docker run --privileged --name=test1 --restart=always -d \
 docker run --privileged --name=mymysql --restart=always -d \
     -p 3306:3306 \
     --network=mynet --ip 10.10.10.24 \
-    -v $workpace/mymysql/conf:/etc/mysql/conf.d \
+    -v $workpace/mymysql/conf:/etc/mysql \
     -v $workpace/mymysql/logs:/logs \
+    -v $workpace/mymysql/mysql:/var/lib/mysql \
     -e MYSQL_ROOT_PASSWORD=123456 \
-    mysql:latest
+    mysql:5.7.18
 
-##docker run --privileged --name=mymysql --restart=always -it \
-##    -p 3306:3306 \
-##    -u root \
-##    --network=mynet --ip 10.10.10.24 \
-##    -e MYSQL_ROOT_PASSWORD=123456 \
-##    mysql:5.6
-#
+#docker run --name=mymysql \
+#    -u root \
+#    -it -p 3306:3306 \
+#    -v /d/HashiCorp/mymysql/mysql:/data/mysql \
+#    -e MYSQL_ROOT_PASSWORD=123456 \
+#    mysql:5.7.18  mysqld --datadir=/data/mysql
+
 ##docker run --name=jenkins --restart=always -d \
 ##  -u root \
 ##  -p 9090:8080 \
@@ -70,18 +73,26 @@ docker run --privileged --name=jenkins_3 --restart=always -d \
     registry.cn-hangzhou.aliyuncs.com/lch_docker_k/test:latest
 
 #mysql允许远程连接
-docker-machine ssh default \
-    "docker exec -d mymysql " \
-    "mysql -uroot -p123456 -e\"" \
-    "CREATE DATABASE $db_name CHARACTER SET utf8 COLLATE utf8_general_ci;" \
-    "ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '123456';" \
-    "FLUSH PRIVILEGES;\""
+#docker-machine ssh default \
+#    "docker exec -d mymysql " \
+#    "mysql -uroot -p123456 -e\"" \
+#    "CREATE DATABASE $db_name CHARACTER SET utf8 COLLATE utf8_general_ci;" \
+#    "ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '123456';" \
+#    "FLUSH PRIVILEGES;\""
 #
 # 启动三个jenkins服务
-docker-machine ssh default "sudo rm -rf /root/.ssh/known_hosts"
-docker-machine ssh default "docker exec -d jenkins_1 java -jar /root/jenkins.war"
-docker-machine ssh default "docker exec -d jenkins_1 \cp -r  ~/.ssh/id_rsa ~/.jenkins/"
-docker-machine ssh default "docker exec -d jenkins_2 java -jar /root/jenkins.war"
-docker-machine ssh default "docker exec -d jenkins_2 \cp -r  ~/.ssh/id_rsa ~/.jenkins/"
-docker-machine ssh default "docker exec -d jenkins_3 java -jar /root/jenkins.war"
-docker-machine ssh default "docker exec -d jenkins_3 \cp -r  ~/.ssh/id_rsa ~/.jenkins/"
+docker exec -d jenkins_1 java -jar /root/jenkins.war
+docker exec -d jenkins_1 \cp -r  ~/.ssh/id_rsa ~/.jenkins/
+docker exec -d jenkins_2 java -jar /root/jenkins.war
+docker exec -d jenkins_2 \cp -r  ~/.ssh/id_rsa ~/.jenkins/
+docker exec -d jenkins_3 java -jar /root/jenkins.war
+docker exec -d jenkins_3 \cp -r  ~/.ssh/id_rsa ~/.jenkins/
+
+#docker-machine ssh default "sudo rm -rf /root/.ssh/known_hosts"
+#docker-machine ssh default "docker exec -d jenkins_1 java -jar /root/jenkins.war"
+#docker-machine ssh default "docker exec -d jenkins_1 \cp -r  ~/.ssh/id_rsa ~/.jenkins/"
+#docker-machine ssh default "docker exec -d jenkins_2 java -jar /root/jenkins.war"
+#docker-machine ssh default "docker exec -d jenkins_2 \cp -r  ~/.ssh/id_rsa ~/.jenkins/"
+#docker-machine ssh default "docker exec -d jenkins_3 java -jar /root/jenkins.war"
+#docker-machine ssh default "docker exec -d jenkins_3 \cp -r  ~/.ssh/id_rsa ~/.jenkins/"
+

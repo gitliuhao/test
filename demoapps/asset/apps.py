@@ -1,5 +1,6 @@
 from django.apps import AppConfig
 
 
-class TailfConfig(AppConfig):
-    name = 'demoapps.asset'
+class AssetConfig(AppConfig):
+    name = 'asset'
+    verbose_name = '主机'

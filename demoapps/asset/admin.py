@@ -234,6 +234,6 @@ class RegisterModel(object):
         except Exception as e:
             pass
 
-
+admin.site.site_header="Test 管理"
 RegisterModel(Asset).register()
 RegisterModel(Project).register()

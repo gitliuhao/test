@@ -12,6 +12,7 @@ SITE_ID = 1
 
 INSTALLED_APPS = (
     'bkoauth',
+    'simpleui',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
