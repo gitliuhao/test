@@ -22,7 +22,7 @@ uWSGI==2.0.13.1
 # 基于django的socket
 
 paramiko==2.4.2
-cryptography==2.4.2
+cryptography==3.2
 dwebsocket
 xmltodict
 python-jenkins==1.0.2
